@@ -2,7 +2,7 @@ from os import path
 
 from ..exceptions import SteamApiStartupError
 from .base import _ApiResourceBase, API_THREAD_LOCAL, get_library
-from libsteam.resources.user import CurrentUser
+from .user import CurrentUser
 from .friends import Friends
 from .groups import Groups
 from .utils import Utils

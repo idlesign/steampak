@@ -1,5 +1,4 @@
-from .base import _FriendsBase, FriendFilter
-from libsteam.resources.base import _ApiResourceBase
+from .base import _FriendsBase, FriendFilter, _ApiResourceBase
 
 
 class UserState(object):
