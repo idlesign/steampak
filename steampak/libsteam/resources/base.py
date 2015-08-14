@@ -194,6 +194,17 @@ class _ApiResourceBase(object):
         """
         return cls._call(func_name, args, restype=ctypes.c_bool, direct=direct)
 
+    @classmethod
+    def _ihandle(cls, fname=None):
+        """Returns an interface handle from a function call.
+         Function name is either built from _res_name or given in `fname`.
+
+        :param str fname: Name of a function returning an interface handle.
+        :return:
+        """
+        fname = fname or cls._res_name.replace('I', '')
+        return getattr(get_library(), fname)()
+
     @property
     def _handle(self):
         if self._cache_handle is None:
