@@ -22,6 +22,14 @@ class Universe(_EnumBase):
     }
 
 
+class NotificationPosition(_EnumBase):
+
+    TOP_LEFT = 0
+    TOP_RIGHT = 1
+    BOTTOM_LEFT = 2
+    BOTTOM_RIGHT = 3
+
+
 class Utils(_ApiResourceBase):
     """Exposes various utility methods."""
 
@@ -83,6 +91,18 @@ class Utils(_ApiResourceBase):
         :return:
         """
         return self._call('GetAppID', (self._handle,))
+
+    def set_notification_position(self, position):
+        """Sets the position where the overlay instance for the currently
+        calling game should show notifications.
+
+        This position is per-game and if this function is called from outside
+        of a game context it will do nothing.
+
+        :param int position: Position. See NotificationPosition.
+        :return:
+        """
+        return self._call('SetOverlayNotificationPosition', (self._handle, position))
 
     def get_universe(self, as_str=False):
         """Returns universe the client is connected to. See Universe.
