@@ -55,7 +55,6 @@ class _ApiResourceBase(object):
     """
 
     _res_name = ''
-    _cache_handle = None
 
     @classmethod
     def set_app_id(cls, app_id):
@@ -204,13 +203,6 @@ class _ApiResourceBase(object):
         """
         fname = fname or cls._res_name.replace('I', '')
         return getattr(get_library(), fname)()
-
-    @property
-    def _handle(self):
-        if self._cache_handle is None:
-            self.__class__._cache_handle = getattr(
-                get_library(), self._res_name.replace('I', ''))()
-        return self._cache_handle
 
 
 class FriendFilter(object):

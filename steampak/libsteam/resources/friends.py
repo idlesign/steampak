@@ -16,7 +16,7 @@ class FriendTag(_ApiResourceBase):
 
         :return:
         """
-        return self._get_str('GetFriendsGroupName', (self._handle, self.tag_id))
+        return self._get_str('GetFriendsGroupName', (self._ihandle(), self.tag_id))
 
     def __len__(self):
         """Returns a number of members with friend tag.
@@ -24,7 +24,7 @@ class FriendTag(_ApiResourceBase):
         :rtype: int
         :return:
         """
-        return self._call('GetFriendsGroupMembersCount', (self._handle, self.tag_id))
+        return self._call('GetFriendsGroupMembersCount', (self._ihandle(), self.tag_id))
 
 
 class FriendTags(_ApiResourceBase):
@@ -38,7 +38,7 @@ class FriendTags(_ApiResourceBase):
         :rtype: int
         :return:
         """
-        return self._call('GetFriendsGroupCount', (self._handle,))
+        return self._call('GetFriendsGroupCount', (self._ihandle(),))
 
     def __call__(self):
         """Generator. Returns FriendTag objects.
@@ -47,7 +47,7 @@ class FriendTags(_ApiResourceBase):
         :return:
         """
         for idx in range(len(self)):
-            tag_id = self._call('GetFriendsGroupIDByIndex', (self._handle, idx))
+            tag_id = self._call('GetFriendsGroupIDByIndex', (self._ihandle(), idx))
             yield FriendTag(tag_id)
 
 
@@ -65,7 +65,7 @@ class Friends(_ApiResourceBase):
         :rtype: int
         :return:
         """
-        return self._call('GetFriendCount', (self._handle, flt))
+        return self._call('GetFriendCount', (self._ihandle(), flt))
 
     def __len__(self):
         return self.get_count()
@@ -78,5 +78,5 @@ class Friends(_ApiResourceBase):
         :return:
         """
         for idx in range(self.get_count(flt)):
-            user_id = self._get_ptr('GetFriendByIndex', (self._handle, idx, flt))
+            user_id = self._get_ptr('GetFriendByIndex', (self._ihandle(), idx, flt))
             yield User(user_id)

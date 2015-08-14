@@ -34,7 +34,7 @@ class Application(_ApiResourceBase):
         """
         max_len = 300
         result, name = self._call(
-            'GetAppName', [self._handle, self.app_id, ResultArg(ctypes.c_char * max_len), max_len])
+            'GetAppName', [self._ihandle(), self.app_id, ResultArg(ctypes.c_char * max_len), max_len])
 
         if result == -1:
             return None
@@ -51,7 +51,7 @@ class Application(_ApiResourceBase):
         """
         max_len = 500
         result, name = self._call(
-            'GetAppInstallDir', [self._handle, self.app_id, ResultArg(ctypes.c_char * max_len), max_len])
+            'GetAppInstallDir', [self._ihandle(), self.app_id, ResultArg(ctypes.c_char * max_len), max_len])
 
         if result == -1:
             return None
@@ -67,7 +67,7 @@ class Application(_ApiResourceBase):
 
         :return:
         """
-        return self._call('GetAppBuildId', (self._handle, self.app_id))
+        return self._call('GetAppBuildId', (self._ihandle(), self.app_id))
 
 
 class InstalledApplications(_ApiResourceBase):
@@ -81,7 +81,7 @@ class InstalledApplications(_ApiResourceBase):
         :rtype: int
         :return:
         """
-        return self._call('GetNumInstalledApps', (self._handle,))
+        return self._call('GetNumInstalledApps', (self._ihandle(),))
 
     def __call__(self):
         """Generator. Returns Application objects, representing currently installed applications.
@@ -91,7 +91,7 @@ class InstalledApplications(_ApiResourceBase):
         """
         max_count = len(self)
         _, apps_id = self._call(
-            'GetInstalledApps', [self._handle, ResultArg(ctypes.c_uint32 * max_count), max_count])
+            'GetInstalledApps', [self._ihandle(), ResultArg(ctypes.c_uint32 * max_count), max_count])
 
         for app_id in apps_id:
             yield app_id, Application(app_id)
@@ -111,7 +111,7 @@ class CurrentApplication(_ApiResourceBase):
         :rtype: str
         :return:
         """
-        return self._get_str('GetCurrentGameLanguage', (self._handle,))
+        return self._get_str('GetCurrentGameLanguage', (self._ihandle(),))
 
     @property
     def language_available(self):
@@ -122,7 +122,7 @@ class CurrentApplication(_ApiResourceBase):
         :rtype: list[str]
         :return:
         """
-        return self._get_str('GetAvailableGameLanguages', (self._handle,)).split(',')
+        return self._get_str('GetAvailableGameLanguages', (self._ihandle(),)).split(',')
 
     @property
     def vac_banned(self):
@@ -131,7 +131,7 @@ class CurrentApplication(_ApiResourceBase):
         :rtype: bool
         :return:
         """
-        return self._get_bool('BIsCybercafe', (self._handle,))
+        return self._get_bool('BIsCybercafe', (self._ihandle(),))
 
     @property
     def mode_cybercafe(self):
@@ -140,7 +140,7 @@ class CurrentApplication(_ApiResourceBase):
         :rtype: bool
         :return:
         """
-        return self._get_bool('BIsCybercafe', (self._handle,))
+        return self._get_bool('BIsCybercafe', (self._ihandle(),))
 
     @property
     def mode_free_weekend(self):
@@ -151,7 +151,7 @@ class CurrentApplication(_ApiResourceBase):
         :rtype: bool
         :return:
         """
-        return self._get_bool('BIsCybercafe', (self._handle,))
+        return self._get_bool('BIsCybercafe', (self._ihandle(),))
 
     @property
     def low_violence(self):
@@ -160,7 +160,7 @@ class CurrentApplication(_ApiResourceBase):
         :rtype: bool
         :return:
         """
-        return self._get_bool('BIsLowViolence', (self._handle,))
+        return self._get_bool('BIsLowViolence', (self._ihandle(),))
 
     @property
     def owned(self):
@@ -169,7 +169,7 @@ class CurrentApplication(_ApiResourceBase):
         :rtype: bool
         :return:
         """
-        return self._get_bool('BIsSubscribed', (self._handle,))
+        return self._get_bool('BIsSubscribed', (self._ihandle(),))
 
 
 class Applications(_ApiResourceBase):

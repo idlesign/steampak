@@ -43,7 +43,7 @@ class Utils(_ApiResourceBase):
         :return:
         """
         # todo is it working at all?
-        return self._call('GetSecondsSinceAppActive', (self._handle,))
+        return self._call('GetSecondsSinceAppActive', (self._ihandle(),))
 
     @property
     def seconds_computer_active(self):
@@ -53,7 +53,7 @@ class Utils(_ApiResourceBase):
         :return:
         """
         # todo is it working at all?
-        return self._call('GetSecondsSinceComputerActive', (self._handle,))
+        return self._call('GetSecondsSinceComputerActive', (self._ihandle(),))
 
     @property
     def server_time(self):
@@ -62,7 +62,7 @@ class Utils(_ApiResourceBase):
         :rtype: datetime
         :return:
         """
-        return datetime.utcfromtimestamp(self._call('GetServerRealTime', (self._handle,)))
+        return datetime.utcfromtimestamp(self._call('GetServerRealTime', (self._ihandle(),)))
 
     @property
     def country_code(self):
@@ -72,7 +72,7 @@ class Utils(_ApiResourceBase):
         :rtype: str
         :return:
         """
-        return self._get_str('GetIPCountry', (self._handle,))
+        return self._get_str('GetIPCountry', (self._ihandle(),))
 
     @property
     def battery_power(self):
@@ -82,7 +82,7 @@ class Utils(_ApiResourceBase):
         :rtype: int
         :return:
         """
-        return self._call('GetCurrentBatteryPower', (self._handle,))
+        return self._call('GetCurrentBatteryPower', (self._ihandle(),))
 
     @property
     def app_id(self):
@@ -90,7 +90,7 @@ class Utils(_ApiResourceBase):
 
         :return:
         """
-        return self._call('GetAppID', (self._handle,))
+        return self._call('GetAppID', (self._ihandle(),))
 
     def set_notification_position(self, position):
         """Sets the position where the overlay instance for the currently
@@ -102,7 +102,7 @@ class Utils(_ApiResourceBase):
         :param int position: Position. See NotificationPosition.
         :return:
         """
-        return self._call('SetOverlayNotificationPosition', (self._handle, position))
+        return self._call('SetOverlayNotificationPosition', (self._ihandle(), position))
 
     @property
     def overlay_enabled(self):
@@ -114,7 +114,7 @@ class Utils(_ApiResourceBase):
         :rtype: bool
         :return:
         """
-        return self._get_bool('IsOverlayEnabled', (self._handle,))
+        return self._get_bool('IsOverlayEnabled', (self._ihandle(),))
 
     @property
     def vr_mode(self):
@@ -123,7 +123,7 @@ class Utils(_ApiResourceBase):
         :rtype: bool
         :return:
         """
-        return self._get_bool('IsSteamRunningInVR', (self._handle,))
+        return self._get_bool('IsSteamRunningInVR', (self._ihandle(),))
 
     def get_universe(self, as_str=False):
         """Returns universe the client is connected to. See Universe.
@@ -131,7 +131,7 @@ class Utils(_ApiResourceBase):
         :param bool as_str: Return human-friendly universe name instead of an ID.
         :return:
         """
-        result = self._call('GetConnectedUniverse', (self._handle,))
+        result = self._call('GetConnectedUniverse', (self._ihandle(),))
 
         if as_str:
             return Universe.get_alias(result)
@@ -157,7 +157,7 @@ class Utils(_ApiResourceBase):
         :rtype: int
         :return:
         """
-        return self._call('GetIPCCallCount', (self._handle,))
+        return self._call('GetIPCCallCount', (self._ihandle(),))
 
     @property
     def ui_language(self):
@@ -168,4 +168,4 @@ class Utils(_ApiResourceBase):
         :rtype: str
         :return:
         """
-        return self._get_str('GetSteamUILanguage', (self._handle,))
+        return self._get_str('GetSteamUILanguage', (self._ihandle(),))

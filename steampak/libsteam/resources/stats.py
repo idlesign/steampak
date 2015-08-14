@@ -18,7 +18,7 @@ class Achievement(_StatsBase):
         self.name = self._str_decode(name)
 
     def _get_attr(self, attr_name):
-        return self._get_str('GetAchievementDisplayAttribute', (self._handle, self._name, attr_name))
+        return self._get_str('GetAchievementDisplayAttribute', (self._ihandle(), self._name, attr_name))
 
     @property
     def title(self):
@@ -40,7 +40,7 @@ class Achievement(_StatsBase):
 
     def get_global_unlock_percent(self):
         result, percent = self._call(
-            'GetAchievementAchievedPercent', [self._handle, self._name, ResultArg(ctypes.c_float)])
+            'GetAchievementAchievedPercent', [self._ihandle(), self._name, ResultArg(ctypes.c_float)])
         return percent
 
     @property
@@ -60,7 +60,7 @@ class Achievement(_StatsBase):
         :return:
         """
         result, unlocked = self._call(
-            'GetAchievement', [self._handle, self._name, ResultArg(ctypes.c_bool)])
+            'GetAchievement', [self._ihandle(), self._name, ResultArg(ctypes.c_bool)])
         return unlocked
 
     def unlock(self):
@@ -69,7 +69,7 @@ class Achievement(_StatsBase):
         :rtype: bool
         :return:
         """
-        return self._get_bool('SetAchievement', (self._handle, self._name))
+        return self._get_bool('SetAchievement', (self._ihandle(), self._name))
 
     def clear(self):
         """Clears (locks) the achievement.
@@ -77,7 +77,7 @@ class Achievement(_StatsBase):
         :rtype: bool
         :return:
         """
-        return self._get_bool('ClearAchievement', (self._handle, self._name))
+        return self._get_bool('ClearAchievement', (self._ihandle(), self._name))
 
     def get_unlock_info(self):
         """Returns tuple of unlock data: (is_unlocked, unlocked_datetime).
@@ -89,7 +89,7 @@ class Achievement(_StatsBase):
         """
         result, unlocked, unlocked_at = self._call(
             'GetAchievementAndUnlockTime',
-            [self._handle, self._name, ResultArg(ctypes.c_bool), ResultArg(ctypes.c_int)])
+            [self._ihandle(), self._name, ResultArg(ctypes.c_bool), ResultArg(ctypes.c_int)])
 
         if unlocked:
             if unlocked_at:
@@ -111,7 +111,7 @@ class Achievements(_StatsBase):
         :rtype: int
         :return:
         """
-        return self._call('GetNumAchievements', (self._handle,))
+        return self._call('GetNumAchievements', (self._ihandle(),))
 
     def __call__(self):
         """Generator. Returns (name, Achievement) tuples.
@@ -120,7 +120,7 @@ class Achievements(_StatsBase):
         :return:
         """
         for idx in range(len(self)):
-            name = self._get_str('GetAchievementName', (self._handle, idx), decode=False)
+            name = self._get_str('GetAchievementName', (self._ihandle(), idx), decode=False)
             yield self._str_decode(name), Achievement(name)
 
 

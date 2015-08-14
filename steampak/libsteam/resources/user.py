@@ -38,7 +38,7 @@ class User(_ApiResourceBase):
         :return:
         """
         # GetPersonaName # todo local player
-        return self._get_str('GetFriendPersonaName', [self._handle, self.user_id])
+        return self._get_str('GetFriendPersonaName', (self._ihandle(), self.user_id))
 
     @property
     def name_history(self):
@@ -49,7 +49,7 @@ class User(_ApiResourceBase):
         history = []
         idx = 0
         while True:
-            name = self._get_str('GetFriendPersonaNameHistory', [self._handle, self.user_id, idx])
+            name = self._get_str('GetFriendPersonaNameHistory', [self._ihandle(), self.user_id, idx])
             if not name:
                 break
             idx += 1
@@ -62,7 +62,7 @@ class User(_ApiResourceBase):
 
         :return:
         """
-        return self._get_str('GetPlayerNickname', [self._handle, self.user_id])
+        return self._get_str('GetPlayerNickname', [self._ihandle(), self.user_id])
 
     def get_state(self, as_str=False):
         """Returns user state. See UserState.
@@ -71,7 +71,7 @@ class User(_ApiResourceBase):
         :return:
         """
         # GetPersonaState  # todo local player
-        result = self._call('GetFriendPersonaState', [self._handle, self.user_id])
+        result = self._call('GetFriendPersonaState', [self._ihandle(), self.user_id])
 
         if as_str:
             return UserState.get_alias(result)
@@ -94,7 +94,7 @@ class User(_ApiResourceBase):
         :rtype: int
         :return:
         """
-        return self._call('GetFriendSteamLevel', [self._handle, self.user_id])
+        return self._call('GetFriendSteamLevel', [self._ihandle(), self.user_id])
 
     def has_friends(self, flt=FriendFilter.ALL):
         """Indicated whether the user has friends, who meet the given criteria (filter).
@@ -103,7 +103,7 @@ class User(_ApiResourceBase):
         :rtype: bool
         :return:
         """
-        return bool(self._call('HasFriend', [self._handle, self.user_id, flt]))
+        return bool(self._call('HasFriend', [self._ihandle(), self.user_id, flt]))
 
 
 class CurrentUser(_ApiResourceBase):
@@ -127,7 +127,7 @@ class CurrentUser(_ApiResourceBase):
         :rtype: bool
         :return:
         """
-        return self._get_bool('BLoggedOn', (self._handle,))
+        return self._get_bool('BLoggedOn', (self._ihandle(),))
 
     @property
     def behind_nat(self):
@@ -136,7 +136,7 @@ class CurrentUser(_ApiResourceBase):
         :rtype: bool
         :return:
         """
-        return self._get_bool('BIsBehindNAT', (self._handle,))
+        return self._get_bool('BIsBehindNAT', (self._ihandle(),))
 
     @property
     def level(self):
@@ -145,12 +145,12 @@ class CurrentUser(_ApiResourceBase):
         :rtype: int
         :return:
         """
-        return self._call('GetPlayerSteamLevel', (self._handle,))
+        return self._call('GetPlayerSteamLevel', (self._ihandle(),))
 
     @property
     def steam_id(self):
-        return self._get_ptr('GetSteamID', (self._handle,))
+        return self._get_ptr('GetSteamID', (self._ihandle(),))
 
     @property
     def steam_handle(self):
-        return self._call('GetHSteamUser', (self._handle,))
+        return self._call('GetHSteamUser', (self._ihandle(),))

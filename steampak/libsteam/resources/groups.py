@@ -19,7 +19,7 @@ class Group(_ApiResourceBase):
 
         self._call(
             'GetClanActivityCounts', [
-                self._handle, self.group_id,
+                self._ihandle(), self.group_id,
                 ctypes.byref(stats_online),
                 ctypes.byref(stats_ingame),
                 ctypes.byref(stats_chatting),
@@ -37,7 +37,7 @@ class Group(_ApiResourceBase):
 
         :return:
         """
-        return self._get_str('GetClanName', (self._handle, self.group_id))
+        return self._get_str('GetClanName', (self._ihandle(), self.group_id))
 
     @property
     def alias(self):
@@ -45,7 +45,7 @@ class Group(_ApiResourceBase):
 
         :return:
         """
-        return self._get_str('GetClanTag', (self._handle, self.group_id))
+        return self._get_str('GetClanTag', (self._ihandle(), self.group_id))
 
 
 class Groups(_ApiResourceBase):
@@ -59,7 +59,7 @@ class Groups(_ApiResourceBase):
         :rtype: int
         :return:
         """
-        return self._call('GetClanCount', (self._handle,))
+        return self._call('GetClanCount', (self._ihandle(),))
 
     def __call__(self):
         """Generator. Returns Group objects.
@@ -68,4 +68,4 @@ class Groups(_ApiResourceBase):
         :return:
         """
         for idx in range(len(self)):
-            yield Group(self._get_ptr('GetClanByIndex', (self._handle, idx)))
+            yield Group(self._get_ptr('GetClanByIndex', (self._ihandle(), idx)))
