@@ -1,6 +1,25 @@
 from datetime import datetime
 
-from .base import _ApiResourceBase
+from .base import _ApiResourceBase, _EnumBase
+
+
+class Universe(_EnumBase):
+
+    INVALID = 0
+    PUBLIC = 1
+    BETA = 2
+    INTERNAL = 3
+    DEV = 4
+    MAX = 5
+
+    aliases = {
+        INVALID: 'invalid',
+        PUBLIC: 'public',
+        BETA: 'beta',
+        INTERNAL: 'internal',
+        DEV: 'dev',
+        MAX: 'max',
+    }
 
 
 class Utils(_ApiResourceBase):
@@ -64,3 +83,25 @@ class Utils(_ApiResourceBase):
         :return:
         """
         return self._call('GetAppID', (self._handle,))
+
+    def get_universe(self, as_str=False):
+        """Returns universe the client is connected to. See Universe.
+
+        :param bool as_str: Return human-friendly universe name instead of an ID.
+        :return:
+        """
+        result = self._call('GetConnectedUniverse', (self._handle,))
+
+        if as_str:
+            return Universe.get_alias(result)
+
+        return result
+
+    @property
+    def universe(self):
+        """Universe the client is connected to.
+
+        :rtype:
+        :return:
+        """
+        return self.get_universe(as_str=True)
