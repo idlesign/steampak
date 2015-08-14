@@ -125,3 +125,15 @@ class Utils(_ApiResourceBase):
         :return:
         """
         return self.get_universe(as_str=True)
+
+    @property
+    def ipc_call_count(self):
+        """The number of IPC calls made since the last time this function was called.
+        Used for perf debugging so you can understand how many IPC calls your game makes per frame.
+        Every IPC call is at minimum a thread context switch if not a process one
+        so you want to rate control how often you do them.
+
+        :rtype: int
+        :return:
+        """
+        return self._call('GetIPCCallCount', (self._handle,))
