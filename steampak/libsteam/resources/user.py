@@ -1,7 +1,7 @@
-from .base import _FriendsBase, FriendFilter, _ApiResourceBase
+from .base import _FriendsBase, FriendFilter, _ApiResourceBase, _EnumBase
 
 
-class UserState(object):
+class UserState(_EnumBase):
     """User states enumeration."""
 
     OFFLINE = 0
@@ -12,7 +12,7 @@ class UserState(object):
     READY_TO_TRADE = 5
     READY_TO_PLAY = 6
 
-    STATES = {
+    aliases = {
         OFFLINE: 'offline',
         ONLINE: 'online',
         BUSY: 'busy',
@@ -21,10 +21,6 @@ class UserState(object):
         READY_TO_TRADE: 'trade',
         READY_TO_PLAY: 'play',
     }
-
-    @classmethod
-    def get_str(cls, state_id):
-        return cls.STATES.get(state_id)
 
 
 class User(_FriendsBase):
@@ -76,7 +72,7 @@ class User(_FriendsBase):
         result = self._call('GetFriendPersonaState', [self._handle, self.user_id])
 
         if as_str:
-            return UserState.get_str(result)
+            return UserState.get_alias(result)
 
         return result
 

@@ -14,6 +14,16 @@ LOGGER = logging.getLogger('steampak.libsteam')
 ResultArg = namedtuple('ResultArg', ['ctype'])
 
 
+class _EnumBase(object):
+    """Enumeration base class."""
+
+    aliases = {}
+
+    @classmethod
+    def get_alias(cls, item_id):
+        return cls.aliases.get(item_id)
+
+
 def get_library(lib_path=None):
     """Returns a library interface object.
 
