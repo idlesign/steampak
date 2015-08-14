@@ -1,10 +1,12 @@
 import ctypes
 
-from .base import _FriendsBase
+from .base import _ApiResourceBase
 
 
-class Group(_FriendsBase):
+class Group(_ApiResourceBase):
     """Exposes methods to get user groups (clans) data."""
+
+    _res_name = 'ISteamFriends'
 
     def __init__(self, group_id):
         self.group_id = group_id
@@ -46,8 +48,10 @@ class Group(_FriendsBase):
         return self._get_str('GetClanTag', (self._handle, self.group_id))
 
 
-class Groups(_FriendsBase):
+class Groups(_ApiResourceBase):
     """Exposes methods to get user groups data. Groups are also known as clans."""
+
+    _res_name = 'ISteamFriends'
 
     def __len__(self):
         """Returns a number of current user groups (clans).

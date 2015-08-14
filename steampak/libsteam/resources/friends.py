@@ -1,9 +1,11 @@
-from .base import _FriendsBase, FriendFilter
+from .base import _ApiResourceBase, FriendFilter
 from .user import User
 
 
-class FriendTag(_FriendsBase):
+class FriendTag(_ApiResourceBase):
     """Exposes methods to get friend tag data."""
+
+    _res_name = 'ISteamFriends'
 
     def __init__(self, tag_id):
         self.tag_id = tag_id
@@ -25,8 +27,10 @@ class FriendTag(_FriendsBase):
         return self._call('GetFriendsGroupMembersCount', (self._handle, self.tag_id))
 
 
-class FriendTags(_FriendsBase):
+class FriendTags(_ApiResourceBase):
     """Exposes methods to get friend tags data."""
+
+    _res_name = 'ISteamFriends'
 
     def __len__(self):
         """Returns a number of current user friend tags.
@@ -47,8 +51,10 @@ class FriendTags(_FriendsBase):
             yield FriendTag(tag_id)
 
 
-class Friends(_FriendsBase):
+class Friends(_ApiResourceBase):
     """Exposes methods to get friends related data."""
+
+    _res_name = 'ISteamFriends'
 
     # Friends tags (categories).
     tags = FriendTags()

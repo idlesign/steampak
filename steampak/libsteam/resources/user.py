@@ -1,4 +1,4 @@
-from .base import _FriendsBase, FriendFilter, _ApiResourceBase, _EnumBase
+from .base import FriendFilter, _ApiResourceBase, _EnumBase
 
 
 class UserState(_EnumBase):
@@ -23,8 +23,10 @@ class UserState(_EnumBase):
     }
 
 
-class User(_FriendsBase):
+class User(_ApiResourceBase):
     """Exposes methods to get user-related data."""
+
+    _res_name = 'ISteamFriends'
 
     def __init__(self, user_id):
         self.user_id = user_id

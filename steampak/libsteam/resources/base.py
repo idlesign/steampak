@@ -202,14 +202,6 @@ class _ApiResourceBase(object):
         return self._cache_handle
 
 
-class _FriendsBase(_ApiResourceBase):
-    """Base class for functions encapsulated under ISteamFriends.
-    Used as base for various steampak classes to improve API usability.
-
-    """
-    _res_name = 'ISteamFriends'
-
-
 class FriendFilter(object):
     """Filters to be provided to functions returning friends.
     Can be combined using |.
