@@ -5,6 +5,7 @@ from collections import namedtuple
 from threading import local
 
 
+LIBRARY_PATH = None
 API_THREAD_LOCAL = local()
 LOGGER = logging.getLogger('steampak.libsteam')
 
@@ -13,7 +14,7 @@ LOGGER = logging.getLogger('steampak.libsteam')
 ResultArg = namedtuple('ResultArg', ['ctype'])
 
 
-def get_library(lib_path):
+def get_library(lib_path=None):
     """Returns a library interface object.
 
     :param str lib_path: Full path to a library file `libsteam_api.so`.
@@ -24,7 +25,12 @@ def get_library(lib_path):
     if lib is not None:
         return lib
 
-    lib = ctypes.CDLL(lib_path)
+    global LIBRARY_PATH
+
+    if LIBRARY_PATH is None:
+        LIBRARY_PATH = lib_path
+
+    lib = ctypes.CDLL(LIBRARY_PATH)
     if lib._name is None:
         lib = None
 
@@ -38,7 +44,6 @@ class _ApiResourceBase(object):
 
     """
 
-    _lib_path = None
     _res_name = ''
     _cache_handle = None
 
@@ -87,7 +92,7 @@ class _ApiResourceBase(object):
                 result_args.append(arg)
                 args[arg_idx] = ctypes.byref(arg)
 
-        func = getattr(API_THREAD_LOCAL.lib, func_name)
+        func = getattr(get_library(), func_name)
 
         if restype is not None:
             func.restype = restype
@@ -165,7 +170,7 @@ class _ApiResourceBase(object):
     def _handle(self):
         if self._cache_handle is None:
             self.__class__._cache_handle = getattr(
-                API_THREAD_LOCAL.lib, self._res_name.replace('I', ''))()
+                get_library(), self._res_name.replace('I', ''))()
         return self._cache_handle
 
 

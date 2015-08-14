@@ -97,7 +97,7 @@ class Api(_ApiResourceBase):
 
     def run_callbacks(self):
         # Heavy duty method. Call library function as directly as possible.
-        API_THREAD_LOCAL.lib.SteamAPI_RunCallbacks()
+        get_library().SteamAPI_RunCallbacks()
 
     def register_callback(self, callback, i_callback):
         self._call('RegisterCallback', (callback, i_callback))
