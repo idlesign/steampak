@@ -116,7 +116,7 @@ class Achievements(_StatsBase):
     def __call__(self):
         """Generator. Returns (name, Achievement) tuples.
 
-        :rtype: tuple[str, Achievement]
+        :rtype: tuple(str, Achievement)
         :return:
         """
         for idx in range(len(self)):

@@ -42,7 +42,7 @@ class Utils(_ApiResourceBase):
         :rtype: int
         :return:
         """
-        # todo is it working at all?
+        # todo works?
         return self._call('GetSecondsSinceAppActive', (self._ihandle(),))
 
     @property
@@ -52,7 +52,7 @@ class Utils(_ApiResourceBase):
         :rtype: int
         :return:
         """
-        # todo is it working at all?
+        # todo works?
         return self._call('GetSecondsSinceComputerActive', (self._ihandle(),))
 
     @property
