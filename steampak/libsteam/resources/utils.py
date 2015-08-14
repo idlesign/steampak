@@ -116,6 +116,15 @@ class Utils(_ApiResourceBase):
         """
         return self._get_bool('IsOverlayEnabled', (self._handle,))
 
+    @property
+    def is_vr_mode(self):
+        """True  if Steam itself is running in VR mode.
+
+        :rtype: bool
+        :return:
+        """
+        return self._get_bool('IsSteamRunningInVR', (self._handle,))
+
     def get_universe(self, as_str=False):
         """Returns universe the client is connected to. See Universe.
 
