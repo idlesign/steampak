@@ -84,9 +84,85 @@ class InstalledApplications(_ApiResourceBase):
             yield app_id, Application(app_id)
 
 
+class CurrentApplication(_ApiResourceBase):
+    """Exposes methods to get current application data."""
+
+    _res_name = 'ISteamApps'
+
+    @property
+    def language_current(self):
+        """Current game language.
+
+        E.g.: english
+
+        :rtype: str
+        :return:
+        """
+        return self._get_str('GetCurrentGameLanguage', (self._handle,))
+
+    @property
+    def language_available(self):
+        """List of available game languages.
+
+        E.g.: ['english', 'russian']
+
+        :rtype: list[str]
+        :return:
+        """
+        return self._get_str('GetAvailableGameLanguages', (self._handle,)).split(',')
+
+    @property
+    def vac_banned(self):
+        """True if the current app is banned by BIsVACBanned.
+
+        :rtype: bool
+        :return:
+        """
+        return self._get_bool('BIsCybercafe', (self._handle,))
+
+    @property
+    def mode_cybercafe(self):
+        """True if the current app supports Valve Cybercafe Program.
+
+        :rtype: bool
+        :return:
+        """
+        return self._get_bool('BIsCybercafe', (self._handle,))
+
+    @property
+    def mode_free_weekend(self):
+        """True if the user is subscribed to the current app through a free weekend.
+        Will return False for users who have a retail or other type of license.
+        Before using, please ask your Valve technical contact how to package and secure your free weekened.
+
+        :rtype: bool
+        :return:
+        """
+        return self._get_bool('BIsCybercafe', (self._handle,))
+
+    @property
+    def low_violence(self):
+        """True if the current app is low violence.
+
+        :rtype: bool
+        :return:
+        """
+        return self._get_bool('BIsLowViolence', (self._handle,))
+
+    @property
+    def owned(self):
+        """True if user owns the current app.
+
+        :rtype: bool
+        :return:
+        """
+        return self._get_bool('BIsSubscribed', (self._handle,))
+
+
 class Applications(_ApiResourceBase):
     """Exposes methods to get applications data."""
 
     _res_name = 'ISteamApps'
 
     installed = InstalledApplications()
+    current = CurrentApplication()
