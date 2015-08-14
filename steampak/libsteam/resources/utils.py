@@ -104,6 +104,18 @@ class Utils(_ApiResourceBase):
         """
         return self._call('SetOverlayNotificationPosition', (self._handle, position))
 
+    @property
+    def is_overlay_enabled(self):
+        """True if the overlay is running & the user can access it.
+
+        The overlay process could take a few seconds to start & hook the game process,
+        so this function will initially return false while the overlay is loading.
+
+        :rtype: bool
+        :return:
+        """
+        return self._get_bool('IsOverlayEnabled', (self._handle,))
+
     def get_universe(self, as_str=False):
         """Returns universe the client is connected to. See Universe.
 
