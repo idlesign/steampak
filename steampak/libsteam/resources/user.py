@@ -119,8 +119,8 @@ class CurrentUser(_ApiResourceBase):
         return User(self.steam_id())
 
     @property
-    def is_logged_in(self):
-        """Whether current user is logged in.
+    def logged_in(self):
+        """True if current user is logged in.
 
         :rtype: bool
         :return:
@@ -128,8 +128,8 @@ class CurrentUser(_ApiResourceBase):
         return self._get_bool('BLoggedOn', (self._handle,))
 
     @property
-    def is_behind_nat(self):
-        """Whether current user is behind NAT.
+    def behind_nat(self):
+        """True if current user is behind NAT.
 
         :rtype: bool
         :return:

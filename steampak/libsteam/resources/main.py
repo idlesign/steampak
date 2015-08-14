@@ -37,7 +37,7 @@ class Api(_ApiResourceBase):
         get_library(library_path)
         self._app_id = app_id
 
-        if self.is_steam_running():
+        if self.steam_running:
             self.init(app_id)
 
     def init(self, app_id=None):
@@ -60,7 +60,8 @@ class Api(_ApiResourceBase):
         """
         return self.utils.app_id
 
-    def is_steam_running(self):
+    @property
+    def steam_running(self):
         """Returns boolean whether a local Steam client is running
 
         :return:

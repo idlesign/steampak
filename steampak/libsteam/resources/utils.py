@@ -105,7 +105,7 @@ class Utils(_ApiResourceBase):
         return self._call('SetOverlayNotificationPosition', (self._handle, position))
 
     @property
-    def is_overlay_enabled(self):
+    def overlay_enabled(self):
         """True if the overlay is running & the user can access it.
 
         The overlay process could take a few seconds to start & hook the game process,
@@ -117,7 +117,7 @@ class Utils(_ApiResourceBase):
         return self._get_bool('IsOverlayEnabled', (self._handle,))
 
     @property
-    def is_vr_mode(self):
+    def vr_mode(self):
         """True  if Steam itself is running in VR mode.
 
         :rtype: bool

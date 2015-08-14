@@ -44,8 +44,8 @@ class Achievement(_StatsBase):
         return percent
 
     @property
-    def is_hidden(self):
-        """Whether achievement is hidden.
+    def hidden(self):
+        """True if achievement is hidden.
 
         :rtype: bool
         :return:
@@ -53,8 +53,8 @@ class Achievement(_StatsBase):
         return self._get_attr('hidden') == '1'
 
     @property
-    def is_unlocked(self):
-        """Whether achievement is unlocked.
+    def unlocked(self):
+        """True if achievement is unlocked.
 
         :rtype: bool
         :return:
