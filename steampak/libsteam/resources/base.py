@@ -83,14 +83,24 @@ class _ApiResourceBase(object):
         return ('%s%s_%s' % (base_prefix, resource_name, short_name)).replace('__', '_')
 
     @classmethod
-    def _call_direct(cls, func_name, args=None, restype=None):
+    def _call(cls, func_name, args=None, restype=None, direct=False):
         """Performs API function call and returns its result.
 
-        :param str func_name: Full name of a function w/o prefix and resource name.
+        :param str func_name: Name of a function.
+
         :param list|tuple args: Arguments to be passed to function.
+
         :param _SimpleCData restype: Ctypes type of function result.
+
+        :param bool direct: If True the given function name is considered to be
+            a full function name, else function name is short and should be automatically
+            extended to a full form with a prefix and a resource name.
+
         :return:
         """
+        if not direct:
+            func_name = cls._get_api_func_name(func_name)
+
         if args is None:
             args = []
 
@@ -116,31 +126,27 @@ class _ApiResourceBase(object):
         if result_args:
             result = [result]
             result.extend([getattr(arg, 'value', arg) for arg in result_args])
-        
+
         return result
 
     @classmethod
-    def _call(cls, func_name, args=None, restype=None):
-        """Performs API function call and returns its result.
-
-        :param str func_name: Short name of a function w/o prefix and resource name.
-        :param list|tuple  args: Arguments to be passed to function.
-        :param _SimpleCData restype: Ctypes type of function result.
-        :return:
-        """
-        return cls._call_direct(cls._get_api_func_name(func_name), args, restype=restype)
-
-    @classmethod
-    def _get_str(cls, func_name, args=None, decode=True):
+    def _get_str(cls, func_name, args=None, decode=True, direct=False):
         """Performs API function call and returns result as a string.
 
         :param str func_name: Short name of a function w/o prefix and resource name.
+
         :param list|tuple args:Arguments to be passed to function.
+
         :param bool decode: Whether to decode bytestring to utf-8.
+
+        :param bool direct: If True the given function name is considered to be
+            a full function name, else function name is short and should be automatically
+            extended to a full form with a prefix and a resource name.
+
         :rtype: str
         :return:
         """
-        result = cls._call(func_name, args, restype=ctypes.c_char_p)
+        result = cls._call(func_name, args, restype=ctypes.c_char_p, direct=direct)
         if not decode:
             return result
         return cls._str_decode(result)
@@ -156,25 +162,37 @@ class _ApiResourceBase(object):
         return val.decode('utf-8')
 
     @classmethod
-    def _get_ptr(cls, func_name, args=None):
+    def _get_ptr(cls, func_name, args=None, direct=False):
         """Performs API function call and returns a pointer to a result.
 
         :param str func_name: Short name of function w/o prefix and resource name.
+
         :param list|tuple args: Arguments to be passed to function.
+
+        :param bool direct: If True the given function name is considered to be
+            a full function name, else function name is short and should be automatically
+            extended to a full form with a prefix and a resource name.
+
         :return:
         """
-        return ctypes.c_void_p(cls._call(func_name, args, restype=ctypes.c_void_p))
+        return ctypes.c_void_p(cls._call(func_name, args, restype=ctypes.c_void_p, direct=direct))
 
     @classmethod
-    def _get_bool(cls, func_name, args=None):
+    def _get_bool(cls, func_name, args=None, direct=False):
         """Performs API function call and returns result as bool.
 
         :param str func_name: Short name of function w/o prefix and resource name.
+
         :param list|tuple  args:Arguments to be passed to function.
+
+        :param bool direct: If True the given function name is considered to be
+            a full function name, else function name is short and should be automatically
+            extended to a full form with a prefix and a resource name.
+
         :rtype: bool
         :return:
         """
-        return cls._call(func_name, args, restype=ctypes.c_bool)
+        return cls._call(func_name, args, restype=ctypes.c_bool, direct=direct)
 
     @property
     def _handle(self):
