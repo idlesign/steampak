@@ -42,8 +42,9 @@ A short example of API provided by steam library, just to give a taste of it:
     for user in api.friends():
         print(user.name)
 
-    # Print out user country code:
-    print(api.utils.get_country_code())
+    # Print out some info from utils:
+    print(api.utils.country_code)
+    print(api.utils.ui_language)
 
     # Achievements progress:
     for ach_name, ach in api.stats.achievements():
@@ -52,6 +53,9 @@ A short example of API provided by steam library, just to give a taste of it:
     # Installed applications titles:
     for app_id, app in api.apps.installed():
         print('%s: %s' % (app_id, app.name))
+
+    # Do not forget to shutdown when done:
+    api.shutdown()
 
 
 Requirements
@@ -65,7 +69,7 @@ Requirements
 Roadmap
 -------
 
-**Work in progress.**
+**Work in progress. Callback-based functions support is not implemented.**
 
 * **Implemented (may be partially)**
 
