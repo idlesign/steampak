@@ -149,3 +149,14 @@ class Utils(_ApiResourceBase):
         :return:
         """
         return self._call('GetIPCCallCount', (self._handle,))
+
+    @property
+    def ui_language(self):
+        """The language the steam client is running in.
+
+        E.g.: russian
+
+        :rtype: str
+        :return:
+        """
+        return self._get_str('GetSteamUILanguage', (self._handle,))
