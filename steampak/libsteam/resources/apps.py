@@ -12,10 +12,23 @@ class Application(_ApiResourceBase):
         self.app_id = app_id
 
     @property
+    def owned(self):
+        """True if user owns the current app.
+
+        SDK Note: only use this member if you need to check ownership
+        of a game related to yours, a demo for example.
+
+        :rtype: bool
+        :return:
+        """
+        return self._get_bool(
+            'SteamAPI_ISteamApps_BIsSubscribedApp', (self._ihandle('SteamApps'), self.app_id), direct=True)
+
+    @property
     def name(self):
         """Application name, or None on error.
 
-        Note: restricted interface can only be used by approved apps.
+        SDK Note: restricted interface can only be used by approved apps.
 
         :return:
         """
@@ -32,7 +45,7 @@ class Application(_ApiResourceBase):
     def install_dir(self):
         """Returns application installation path, or None on error.
 
-        Note: restricted interface can only be used by approved apps.
+        SDK Note: restricted interface can only be used by approved apps.
 
         :return:
         """
