@@ -8,10 +8,11 @@ include docs/Makefile
 recursive-include docs .rst
 recursive-include docs .py
 
-recursive-include bin *
-
 recursive-include tests *
+recursive-include steampak .py
 
 recursive-exclude * __pycache__
 recursive-exclude * *.py[co]
 recursive-exclude * empty
+recursive-exclude * *.so
+recursive-exclude * *.txt
