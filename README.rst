@@ -24,7 +24,7 @@ Steam library bindings for Python programming language.
 
 It allows your game to interact with features offered by Steam client and Steam platform.
 
-A short example of API provided by steam library, just to give a taste of it:
+A short example of API provided by Steam library, just to give a taste of it:
 
 .. code-block:: python
 
@@ -77,7 +77,7 @@ Roadmap
     * Utilities
     * Achievements
 
-* **Available**
+* **Not [yet]**
 
     * Controller
     * HTML Surface
