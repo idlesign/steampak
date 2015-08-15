@@ -3,7 +3,16 @@ from .user import User
 
 
 class FriendTag(_ApiResourceBase):
-    """Exposes methods to get friend tag data."""
+    """Exposes methods to get friend tag data.
+
+    Interface can be accessed through ``api.friends.tags()``:
+
+    .. code-block:: python
+
+        for tag in api.friends.tags():
+            print(tag.name)
+
+    """
 
     _res_name = 'ISteamFriends'
 
@@ -14,7 +23,7 @@ class FriendTag(_ApiResourceBase):
     def name(self):
         """Name of a friend tag, or None on error.
 
-        :return:
+        :rtype: str
         """
         return self._get_str('GetFriendsGroupName', (self._ihandle(), self.tag_id))
 
@@ -52,18 +61,35 @@ class FriendTags(_ApiResourceBase):
 
 
 class Friends(_ApiResourceBase):
-    """Exposes methods to get friends related data."""
+    """Exposes methods to get friends related data.
 
+    Interface can be accessed through ``api.friends()``:
+
+    .. code-block:: python
+
+        for user in api.friends():
+            print(user.name)
+
+    """
     _res_name = 'ISteamFriends'
 
-    # Friends tags (categories).
     tags = FriendTags()
+    """Interface to friend tags (categories).
+
+    .. code-block:: python
+
+        for tag in api.friends.tags():
+            print(tag.name)
+
+    """
 
     def get_count(self, flt=FriendFilter.ALL):
         """Returns a number of current user friends, who meet a given criteria (filter).
 
+        :param int flt: Filter value from FriendFilter. Filters can be combined with `|`.
+            Defaults to ``FriendFilter.ALL``.
+
         :rtype: int
-        :return:
         """
         return self._call('GetFriendCount', (self._ihandle(), flt))
 
@@ -75,7 +101,6 @@ class Friends(_ApiResourceBase):
 
         :param int flt: Filter value from FriendFilter. Filters can be combined with |.
         :rtype: User
-        :return:
         """
         for idx in range(self.get_count(flt)):
             user_id = self._get_ptr('GetFriendByIndex', (self._ihandle(), idx, flt))

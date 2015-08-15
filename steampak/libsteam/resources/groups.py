@@ -4,7 +4,16 @@ from .base import _ApiResourceBase
 
 
 class Group(_ApiResourceBase):
-    """Exposes methods to get user groups (clans) data."""
+    """Exposes methods to get user groups (clans) data.
+
+    Instances can be accessed through ``api.groups()``:
+
+    .. code-block:: python
+
+        for group in api.groups():
+            print(group.name)
+
+    """
 
     _res_name = 'ISteamFriends'
 
@@ -13,6 +22,16 @@ class Group(_ApiResourceBase):
 
     @property
     def stats(self):
+        """Basic group statistics.
+
+        Returned dict has the following keys:
+
+            'online' - users online count
+            'ingame' - users currently in game count
+            'chatting' - users chatting count
+
+        :return: dict
+        """
         stats_online = ctypes.c_int()
         stats_ingame = ctypes.c_int()
         stats_chatting = ctypes.c_int()
@@ -35,7 +54,7 @@ class Group(_ApiResourceBase):
     def name(self):
         """Name of a group.
 
-        :return:
+        :rtype: str
         """
         return self._get_str('GetClanName', (self._ihandle(), self.group_id))
 
@@ -43,13 +62,22 @@ class Group(_ApiResourceBase):
     def alias(self):
         """Alias (short name) of a group.
 
-        :return:
+        :rtype: str
         """
         return self._get_str('GetClanTag', (self._ihandle(), self.group_id))
 
 
 class Groups(_ApiResourceBase):
-    """Exposes methods to get user groups data. Groups are also known as clans."""
+    """Exposes methods to get user groups data. Groups are also known as clans.
+
+    Interface can be accessed through ``api.groups()``:
+
+    .. code-block:: python
+
+        for group in api.groups():
+            print(group.name)
+
+    """
 
     _res_name = 'ISteamFriends'
 
@@ -57,7 +85,6 @@ class Groups(_ApiResourceBase):
         """Returns a number of current user groups (clans).
 
         :rtype: int
-        :return:
         """
         return self._call('GetClanCount', (self._ihandle(),))
 
@@ -65,7 +92,6 @@ class Groups(_ApiResourceBase):
         """Generator. Returns Group objects.
 
         :rtype: Group
-        :return:
         """
         for idx in range(len(self)):
             yield Group(self._get_ptr('GetClanByIndex', (self._ihandle(), idx)))

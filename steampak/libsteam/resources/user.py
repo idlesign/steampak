@@ -24,7 +24,16 @@ class UserState(_EnumBase):
 
 
 class User(_ApiResourceBase):
-    """Exposes methods to get user-related data."""
+    """Exposes methods to get user-related data.
+
+    Instance access example:
+
+    .. code-block:: python
+
+        for user in api.friends():
+            print(user.name)
+
+    """
 
     _res_name = 'ISteamFriends'
 
@@ -33,9 +42,9 @@ class User(_ApiResourceBase):
 
     @property
     def name(self):
-        """Returns user name (the same name as on the users community profile page).
+        """User name (the same name as on the users community profile page).
 
-        :return:
+        :rtype: str
         """
         # GetPersonaName # todo local player
         return self._get_str('GetFriendPersonaName', (self._ihandle(), self.user_id))
@@ -44,7 +53,7 @@ class User(_ApiResourceBase):
     def name_history(self):
         """A list of user names (as user can change those occasionally).
 
-        :return:
+        :rtype: list
         """
         history = []
         idx = 0
@@ -58,17 +67,17 @@ class User(_ApiResourceBase):
 
     @property
     def nickname(self):
-        """A nickname the current user has set for the user, or None if not set
+        """A nickname the current user has set for the user, or ``None`` if not set.
 
-        :return:
+        :rtype: str
         """
         return self._get_str('GetPlayerNickname', [self._ihandle(), self.user_id])
 
     def get_state(self, as_str=False):
-        """Returns user state. See UserState.
+        """Returns user state. See ``UserState``.
 
         :param bool as_str: Return human-friendly state name instead of an ID.
-        :return:
+        :rtype: int|str
         """
         # GetPersonaState  # todo local player
         result = self._call('GetFriendPersonaState', [self._ihandle(), self.user_id])
@@ -83,74 +92,84 @@ class User(_ApiResourceBase):
         """User state. See .get_state().
 
         :rtype: str
-        :return:
         """
         return self.get_state(as_str=True)
 
     @property
     def level(self):
-        """User steam level.
+        """User level (as shown on profile).
 
         :rtype: int
-        :return:
         """
         return self._call('GetFriendSteamLevel', [self._ihandle(), self.user_id])
 
     def has_friends(self, flt=FriendFilter.ALL):
         """Indicated whether the user has friends, who meet the given criteria (filter).
 
-        :param int flt: Filter value from FriendFilter. Filters can be combined with |.
+        :param int flt: Filter value from FriendFilter. Filters can be combined with `|`.
         :rtype: bool
-        :return:
         """
-        return bool(self._call('HasFriend', [self._ihandle(), self.user_id, flt]))
+        return self._get_bool('HasFriend', (self._ihandle(), self.user_id, flt))
 
 
 class CurrentUser(_ApiResourceBase):
-    """Exposed methods related to a current Steam client user."""
+    """Exposed methods related to a current Steam client user.
 
+    Can be accessed through ``api.current_user``:
+
+    .. code-block:: python
+
+        user = api.current_user
+
+    """
     _res_name = 'ISteamUser'
 
     @property
     def user(self):
-        """User object for current user.
-
-        :rtype: User
-        :return:
-        """
+        # User object for current user.
         return User(self.steam_id())
 
     @property
     def logged_in(self):
-        """True if current user is logged in.
+        """``True`` if the Steam client current has a live connection to the Steam servers.
+
+        If ``False``, it means there is no active connection due to either a networking issue
+        on the local machine, or the Steam server is down/busy.
+
+        The Steam client will automatically be trying to recreate the connection as often as possible.
 
         :rtype: bool
-        :return:
         """
         return self._get_bool('BLoggedOn', (self._ihandle(),))
 
     @property
     def behind_nat(self):
-        """True if current user is behind NAT.
+        """``True`` if this users looks like they are behind a NAT device.
+        Only valid once the user has connected to steam (i.e a SteamServersConnected_t has been issued)
+        and may not catch all forms of NAT.
 
         :rtype: bool
-        :return:
         """
         return self._get_bool('BIsBehindNAT', (self._ihandle(),))
 
     @property
     def level(self):
-        """Current user level.
+        """Current user level (as shown on their profile).
 
         :rtype: int
-        :return:
         """
         return self._call('GetPlayerSteamLevel', (self._ihandle(),))
 
     @property
     def steam_id(self):
+        # Returns the CSteamID of the account currently logged into the Steam client.
+        # A CSteamID is a unique identifier for an account, and used to differentiate users
+        # in all parts of the Steamworks API
         return self._get_ptr('GetSteamID', (self._ihandle(),))
 
     @property
     def steam_handle(self):
+        # Returns the HSteamUser this interface represents.
+        # This is only used internally by the API, and by a few select interfaces
+        # that support multi-user.
         return self._call('GetHSteamUser', (self._ihandle(),))

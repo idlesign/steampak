@@ -20,6 +20,9 @@ Description
 
 *Nicely packed tools to work with Steam APIs*
 
+Steam library bindings for Python programming language.
+
+It allows your game to interact with features offered by Steam client and Steam platform.
 
 A short example of API provided by steam library, just to give a taste of it:
 
@@ -33,7 +36,7 @@ A short example of API provided by steam library, just to give a taste of it:
     LIBRARY_PATH = '/home/me/my_steam_game/libsteam_api.so'
 
     # Your application (game) identifier provided by Steam.
-    # Pass it as a parameter or place `steam_appid.txt` file with that ID in your game folder.
+    # Pass it as a parameter or put `steam_appid.txt` file with that ID in your game folder.
     APP_ID = 480  # We use `Spacewar` ID. (This game is provided with SDK).
 
     api = SteamApi(LIBRARY_PATH, app_id=APP_ID)
@@ -44,10 +47,9 @@ A short example of API provided by steam library, just to give a taste of it:
 
     # Print out some info from utils:
     print(api.utils.country_code)
-    print(api.utils.ui_language)
 
-    # Achievements progress:
-    for ach_name, ach in api.stats.achievements():
+    # Current app achievements progress:
+    for ach_name, ach in api.apps.current.achievements():
         print('%s (%s): %s' % (ach.title, ach_name, ach.get_unlock_info()))
 
     # Installed applications titles:
@@ -56,14 +58,6 @@ A short example of API provided by steam library, just to give a taste of it:
 
     # Do not forget to shutdown when done:
     api.shutdown()
-
-
-Requirements
-------------
-
-* Python 2.7+, 3.3+
-* Steam API library from Steamworks SDK 1.32 (5th February 2015) or above
-* Linux (not tested with libraries for OSX or Windows)
 
 
 Roadmap
@@ -102,4 +96,4 @@ Roadmap
 Documentation
 -------------
 
-Not yet available at http://steampak.readthedocs.org/
+http://steampak.readthedocs.org/

@@ -1,24 +1,78 @@
-from os import path
+from os import path, environ
 
 from ..exceptions import SteamApiStartupError
-from .base import _ApiResourceBase, API_THREAD_LOCAL, get_library
+from .base import _ApiResourceBase, get_library
 from .user import CurrentUser
 from .friends import Friends
 from .groups import Groups
 from .utils import Utils
 from .apps import Applications
-from .stats import Stats
 
 
 class Api(_ApiResourceBase):
-    """Main entry point of Steam API."""
+    """Main entry point of Steam API.
 
-    player = CurrentUser()
+    It is aliased as ``steampak.SteamApi``.
+
+    .. code-block:: python
+
+        from steampak import SteamApi
+
+        # Automatically initialize Steam API library if Steam client is running.
+        api = SteamApi(LIBRARY_PATH, app_id=APP_ID)
+
+        # Do not forget to shutdown when done:
+        api.shutdown()
+
+    """
+
+    current_user = CurrentUser()
+    """Interface to current user.
+
+    .. code-block:: python
+
+        print(api.current_user.name)
+
+    """
+
     friends = Friends()
+    """Interface to friends of current user.
+
+    .. code-block:: python
+
+        for user in api.friends():
+            print(user.name)
+
+    """
+
     groups = Groups()
-    stats = Stats()
+    """Interface to user groups.
+
+    .. code-block:: python
+
+        for group in api.groups():
+            print(group.name)
+
+    """
+
     utils = Utils()
+    """Interface to various utilities.
+
+    .. code-block:: python
+
+        print(api.utils.ui_language)
+
+    """
+
     apps = Applications()
+    """Interface to applications (games).
+
+    .. code-block:: python
+
+        for app_id, app in api.apps.installed():
+            print('%s: %s' % (app_id, app.name))
+
+    """
 
     _app_id = None
 
@@ -30,9 +84,7 @@ class Api(_ApiResourceBase):
             at https://partner.steamgames.com/
 
         :param str|int app_id: Application (game) identifier.
-            Pass it as a parameter or place `steam_appid.txt` file with that ID in your game folder.
-
-        :return:
+            Pass it as a parameter or put `steam_appid.txt` file with that ID in your game folder.
         """
         get_library(library_path)
         self._app_id = app_id
@@ -43,8 +95,8 @@ class Api(_ApiResourceBase):
     def init(self, app_id=None):
         """Initializes Steam API library.
 
-        :param app_id:
-        :return:
+        :param str|int app_id: Application ID.
+        :raises: SteamApiStartupError
         """
         self.set_app_id(app_id)
         if not self._call('Init'):
@@ -52,26 +104,33 @@ class Api(_ApiResourceBase):
                 'Unable to initialize. Check Steam client is running '
                 'and Steam application ID is defined in steam_appid.txt or passed to Api.')
 
+    @classmethod
+    def set_app_id(cls, app_id):
+        """Sets current application ID into environment.
+
+        :param str|int app_id: Your application ID.
+        """
+        if app_id:
+            environ['SteamAppId'] = str(app_id)  # SteamGameId
+
     @property
     def app_id(self):
-        """Application ID of the current process.
-
-        :return:
-        """
+        """Application ID of the current process."""
         return self.utils.app_id
 
     @property
     def steam_running(self):
-        """Returns boolean whether a local Steam client is running
+        """``True`` if a local Steam client is running
 
-        :return:
+        :rtype: bool
         """
         return bool(self._call('IsSteamRunning'))
 
-    def get_install_path(self):
+    @property
+    def install_path(self):
         """Returns library installation path.
 
-        :return:
+        :rtype: str
         """
         return path.abspath(self._get_str('GetSteamInstallPath'))
 
@@ -80,16 +139,15 @@ class Api(_ApiResourceBase):
         Detects if your executable was launched through the Steam client, and restarts your game through
         the client if necessary. The Steam client will be started if it is not running.
 
-        Returns: true if your executable was NOT launched through the Steam client. This function will
-                  then start your application through the client. Your current process should exit.
+        SDK Note: This function should be used only if you are using CEG or not using Steam's DRM. Once applied
+        to your executable, Steam's DRM will handle restarting through Steam if necessary.
 
-                 false if your executable was started through the Steam client or a steam_appid.txt file
-                 is present in your game's directory (for development). Your current process should continue.
+        :rtype: bool
+        :return: True if your executable was NOT launched through the Steam client. This function will
+                then start your application through the client. Your current process should exit.
 
-        NOTE: This function should be used only if you are using CEG or not using Steam's DRM. Once applied
-              to your executable, Steam's DRM will handle restarting through Steam if necessary.
-
-        :return:
+                False if your executable was started through the Steam client or a steam_appid.txt file
+                is present in your game's directory (for development). Your current process should continue.
         """
         args = None
         if self._app_id is not None:
@@ -113,8 +171,5 @@ class Api(_ApiResourceBase):
         self._call('UnregisterCallResult', (callback, result))
 
     def shutdown(self):
-        """Shutdowns API.
-
-        :return:
-        """
+        """Shutdowns API."""
         self._call('Shutdown')

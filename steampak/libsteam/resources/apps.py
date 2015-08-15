@@ -3,6 +3,7 @@ from datetime import datetime
 
 from .base import _ApiResourceBase, ResultArg
 from .user import User
+from .stats import CurrentApplicationAchievements
 
 
 MAX_TITLE_LEN = 300
@@ -10,32 +11,45 @@ MAX_DIRECTORY_LEN = 500
 
 
 class Application(_ApiResourceBase):
-    """Exposes methods to get application data."""
+    """Exposes methods to get application data.
+
+    Aliased as ``steampak.SteamApplication``.
+
+    .. code-block:: python
+
+        from steampak import SteamApplication
+
+        # We use `Spacewar` app ID. (This game is provided with SDK).
+        my_app = SteamApplication(480)
+
+    """
 
     _res_name = 'ISteamApps'
 
     def __init__(self, app_id):
+        """
+        :param int|None app_id: Application (game) ID.
+        """
         if app_id is not None:  # Might be None for current app.
             self.app_id = app_id
 
     @property
     def owned(self):
-        """True if user owns the current app.
+        """``True`` if user owns the current app.
 
-        SDK Note: only use this member if you need to check ownership
-        of a game related to yours, a demo for example.
+        .. warning::
+
+            Only use this member if you need to check ownership of a game related to yours, a demo for example.
 
         :rtype: bool
-        :return:
         """
         return self._get_bool('BIsSubscribedApp', (self._ihandle(), self.app_id))
 
     @property
     def installed(self):
-        """True if app is installed (not necessarily owned).
+        """``True`` if app is installed (not necessarily owned).
 
         :rtype: bool
-        :return:
         """
         return self._get_bool('BIsAppInstalled', (self._ihandle(), self.app_id))
 
@@ -43,9 +57,11 @@ class Application(_ApiResourceBase):
     def name(self):
         """Application name, or None on error.
 
-        SDK Note: restricted interface can only be used by approved apps.
+        .. warning::
 
-        :return:
+            Restricted interface can only be used by approved apps.
+
+        :rtype: str
         """
         max_len = MAX_TITLE_LEN
         result, name = self._call(
@@ -61,8 +77,11 @@ class Application(_ApiResourceBase):
     def install_dir(self):
         """Returns application installation path.
 
+        .. note::
+
+            If fails this falls back to a restricted interface, which can only be used by approved apps.
+
         :rtype: str
-        :return:
         """
         max_len = MAX_DIRECTORY_LEN
         res_arg = ResultArg(ctypes.c_char * max_len)
@@ -84,7 +103,6 @@ class Application(_ApiResourceBase):
         """Date and time of app purchase.
 
         :rtype: datetime
-        :return:
         """
         # todo works?
         ts = self._call('GetEarliestPurchaseUnixTime', (self._ihandle(),))
@@ -97,17 +115,26 @@ class Application(_ApiResourceBase):
         """Application Build ID.
         This may change at any time based on backend updates.
 
-        SDK Note: restricted interface can only be used by approved apps.
+        .. warning::
 
-        :return:
+            Restricted interface can only be used by approved apps.
+
+        :rtype: int
         """
         return self._call(
             'SteamAPI_ISteamAppList_GetAppBuildId', (self._ihandle('SteamAppList'), self.app_id), direct=True)
 
 
 class InstalledApplications(_ApiResourceBase):
-    """Exposes methods to get data on installed applications."""
+    """Exposes methods to get data on installed applications.
 
+    Interface can be accessed through ``api.apps.installed``.
+
+    .. warning::
+
+        Restricted interface can only be used by approved apps.
+
+    """
     _res_name = 'ISteamAppList'
 
     def __len__(self):
@@ -133,7 +160,21 @@ class InstalledApplications(_ApiResourceBase):
 
 
 class Dlc(Application):
-    """Exposes methods to get downloadable content (DLC) data."""
+    """Exposes methods to get downloadable content (DLC) data.
+
+    Aliased as ``steampak.SteamDlc``.
+
+    .. code-block:: python
+
+        from steampak import SeamDlc
+
+        # We use `Spacewar` DLC app ID. (Spacewar game is provided with SDK).
+        my_dlc = SeamDlc(110902)
+
+
+    Current application DLCs are available through ``CurrentApplication.dlcs``.
+
+    """
 
     def __init__(self, app_id):
         super(Dlc, self).__init__(app_id)
@@ -142,33 +183,26 @@ class Dlc(Application):
 
     @property
     def installed(self):
-        """True if the user owns the DLC & if the DLC is installed
+        """``True`` if the user owns the DLC & if the DLC is installed.
 
         :rtype: bool
-        :return:
         """
         return self._get_bool('BIsDlcInstalled', (self._ihandle(), self.app_id))
 
     def install(self):
-        """Installs DLC (for optional DLCs).
-
-        :return:
-        """
+        """Installs DLC (for optional DLCs)."""
         self._call('InstallDLC', (self._ihandle(), self.app_id))
 
     def uninstall(self):
-        """Uninstalls DLC (for optional DLCs).
-
-        :return:
-        """
+        """Uninstalls DLC (for optional DLCs)."""
         self._call('UninstallDLC', (self._ihandle(), self.app_id))
 
     def get_download_progress(self):
         """Returns tuple with download progress (for optional DLCs):
-        (bytes_downloaded, bytes_total)
+
+            (bytes_downloaded, bytes_total)
 
         :rtype: tuple
-        :return:
         """
         _, current, total = self._call(
             'GetDlcDownloadProgress',
@@ -181,7 +215,6 @@ class Dlc(Application):
         """DLC name.
 
         :rtype: str
-        :return:
         """
         # Fallback to parent data if necessary.
         return self._name or super(Dlc, self).name
@@ -191,7 +224,6 @@ class Dlc(Application):
         """True if DLC is available.
 
         :rtype: bool
-        :return:
         """
         return self._available
 
@@ -233,9 +265,40 @@ class CurrentApplicationDlcs(_ApiResourceBase):
 
 
 class CurrentApplication(Application):
-    """Exposes methods to get current application data."""
+    """Exposes methods to get current application data.
+
+    Interface can be accessed through ``api.apps.current``.
+
+    .. code-block:: python
+
+        from steampak import SteamApi
+
+        api = SteamApi(LIBRARY_PATH, app_id=APP_ID)
+
+        print(api.apps.current.language_current)
+
+    """
 
     dlcs = CurrentApplicationDlcs()
+    """Interface to DLCs of current application.
+
+    .. code-block:: python
+
+        for dlc_id, dlc in api.apps.current.dlcs():
+            print('%s: %s' % (dlc_id, dlc.name))
+
+    """
+
+    achievements = CurrentApplicationAchievements()
+    """Current application (game) achievements.
+
+    .. code-block:: python
+
+        for ach_name, ach in api.apps.current.achievements():
+            print('%s: %s' % (ach_name, ach.title))
+
+    """
+
 
     def __init__(self):
         super(CurrentApplication, self).__init__(None)
@@ -250,7 +313,6 @@ class CurrentApplication(Application):
         """Current beta branch name, 'public' is the default branch.
 
         :rtype: str
-        :return:
         """
         # todo works?
         max_len = MAX_TITLE_LEN
@@ -262,9 +324,11 @@ class CurrentApplication(Application):
         """Current application Build ID.
         This may change at any time based on backend updates.
 
-        SDK Note: restricted interface can only be used by approved apps.
+        .. warning::
 
-        :return:
+            Restricted interface can only be used by approved apps.
+
+        :rtype: int
         """
         return self._call('GetAppBuildId', (self._ihandle(),))
 
@@ -275,7 +339,6 @@ class CurrentApplication(Application):
         E.g.: english
 
         :rtype: str
-        :return:
         """
         return self._get_str('GetCurrentGameLanguage', (self._ihandle(),))
 
@@ -286,54 +349,52 @@ class CurrentApplication(Application):
         E.g.: ['english', 'russian']
 
         :rtype: list[str]
-        :return:
         """
         return self._get_str('GetAvailableGameLanguages', (self._ihandle(),)).split(',')
 
     @property
     def vac_banned(self):
-        """True if the current app is banned by BIsVACBanned.
+        """``True`` if the current app is banned by BIsVACBanned.
 
         :rtype: bool
-        :return:
         """
         return self._get_bool('BIsCybercafe', (self._ihandle(),))
 
     @property
     def mode_cybercafe(self):
-        """True if the current app supports Valve Cybercafe Program.
+        """``True`` if the current app supports Valve Cybercafe Program.
 
         :rtype: bool
-        :return:
         """
         return self._get_bool('BIsCybercafe', (self._ihandle(),))
 
     @property
     def mode_free_weekend(self):
-        """True if the user is subscribed to the current app through a free weekend.
-        Will return False for users who have a retail or other type of license.
-        Before using, please ask your Valve technical contact how to package and secure your free weekened.
+        """``True`` if the user is subscribed to the current app through a free weekend.
+
+        Will return ``False`` for users who have a retail or other type of license.
+
+        .. note::
+
+            Before using, please ask your Valve technical contact how to package and secure your free weekened.
 
         :rtype: bool
-        :return:
         """
         return self._get_bool('BIsCybercafe', (self._ihandle(),))
 
     @property
     def low_violence(self):
-        """True if the current app is low violence.
+        """``True`` if the current app is low violence.
 
         :rtype: bool
-        :return:
         """
         return self._get_bool('BIsLowViolence', (self._ihandle(),))
 
     @property
     def owned(self):
-        """True if user owns the current app.
+        """``True`` if user owns the current app.
 
         :rtype: bool
-        :return:
         """
         return self._get_bool('BIsSubscribed', (self._ihandle(),))
 
@@ -342,7 +403,6 @@ class CurrentApplication(Application):
         """Owner user. If different from current user, app is borrowed.
 
         :rtype: User
-        :return:
         """
         owner_id = self._get_ptr('GetAppOwner', (self._ihandle(),))
         return User(owner_id)
@@ -350,9 +410,8 @@ class CurrentApplication(Application):
     def mark_corrupt(self, only_files_missing=False):
         """Signal Steam that game files seems corrupt or missing.
 
-        :param bool only_files_missing: Set to True if only files are missing.
+        :param bool only_files_missing: Set it to True if only files are missing.
         :rtype: bool
-        :return:
         """
         return self._get_bool('MarkContentCorrupt', (self._ihandle(), only_files_missing))
 
@@ -363,4 +422,20 @@ class Applications(_ApiResourceBase):
     _res_name = 'ISteamApps'
 
     installed = InstalledApplications()
+    """Interface to installed applications.
+
+    .. code-block:: python
+
+        for app_id, app in api.apps.installed():
+            print('%s: %s' % (app_id, app.name))
+
+    """
+
     current = CurrentApplication()
+    """Interface to current application.
+
+    .. code-block:: python
+
+        print(api.apps.current.language_current)
+
+    """

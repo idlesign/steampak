@@ -22,7 +22,7 @@ class Universe(_EnumBase):
     }
 
 
-class NotificationPosition(_EnumBase):
+class NotificationPosition(object):
 
     TOP_LEFT = 0
     TOP_RIGHT = 1
@@ -31,7 +31,15 @@ class NotificationPosition(_EnumBase):
 
 
 class Utils(_ApiResourceBase):
-    """Exposes various utility methods."""
+    """Exposes various utility methods.
+
+    Interface can be accessed through ``api.utils``:
+
+    .. code-block:: python
+
+        print(api.utils.ui_language)
+
+    """
 
     _res_name = 'ISteamUtils'
 
@@ -40,7 +48,6 @@ class Utils(_ApiResourceBase):
         """Number seconds application is active.
 
         :rtype: int
-        :return:
         """
         # todo works?
         return self._call('GetSecondsSinceAppActive', (self._ihandle(),))
@@ -50,7 +57,6 @@ class Utils(_ApiResourceBase):
         """Number seconds computer is active.
 
         :rtype: int
-        :return:
         """
         # todo works?
         return self._call('GetSecondsSinceComputerActive', (self._ihandle(),))
@@ -60,17 +66,17 @@ class Utils(_ApiResourceBase):
         """Date and time on server.
 
         :rtype: datetime
-        :return:
         """
         return datetime.utcfromtimestamp(self._call('GetServerRealTime', (self._ihandle(),)))
 
     @property
     def country_code(self):
         """2 digit ISO 3166-1-alpha-2 format country code this client is running in
-        (as looked up via an IP-to-location database) e.g "RU".
+        (as looked up via an IP-to-location database)
+
+        E.g: RU.
 
         :rtype: str
-        :return:
         """
         return self._get_str('GetIPCountry', (self._ihandle(),))
 
@@ -80,7 +86,6 @@ class Utils(_ApiResourceBase):
         255 for being on AC power.
 
         :rtype: int
-        :return:
         """
         return self._call('GetCurrentBatteryPower', (self._ihandle(),))
 
@@ -88,7 +93,7 @@ class Utils(_ApiResourceBase):
     def app_id(self):
         """Application ID of the current process.
 
-        :return:
+        :rtype: int
         """
         return self._call('GetAppID', (self._ihandle(),))
 
@@ -99,37 +104,34 @@ class Utils(_ApiResourceBase):
         This position is per-game and if this function is called from outside
         of a game context it will do nothing.
 
-        :param int position: Position. See NotificationPosition.
-        :return:
+        :param int position: Position. See ``NotificationPosition``.
         """
         return self._call('SetOverlayNotificationPosition', (self._ihandle(), position))
 
     @property
     def overlay_enabled(self):
-        """True if the overlay is running & the user can access it.
+        """``True`` if the overlay is running & the user can access it.
 
         The overlay process could take a few seconds to start & hook the game process,
-        so this function will initially return false while the overlay is loading.
+        so this function will initially return ``False`` while the overlay is loading.
 
         :rtype: bool
-        :return:
         """
         return self._get_bool('IsOverlayEnabled', (self._ihandle(),))
 
     @property
     def vr_mode(self):
-        """True  if Steam itself is running in VR mode.
+        """``True``  if Steam itself is running in VR mode.
 
         :rtype: bool
-        :return:
         """
         return self._get_bool('IsSteamRunningInVR', (self._ihandle(),))
 
     def get_universe(self, as_str=False):
-        """Returns universe the client is connected to. See Universe.
+        """Returns universe the client is connected to. See ``Universe``.
 
         :param bool as_str: Return human-friendly universe name instead of an ID.
-        :return:
+        :rtype: int|str
         """
         result = self._call('GetConnectedUniverse', (self._ihandle(),))
 
@@ -142,8 +144,7 @@ class Utils(_ApiResourceBase):
     def universe(self):
         """Universe the client is connected to.
 
-        :rtype:
-        :return:
+        :rtype: str
         """
         return self.get_universe(as_str=True)
 
@@ -155,7 +156,6 @@ class Utils(_ApiResourceBase):
         so you want to rate control how often you do them.
 
         :rtype: int
-        :return:
         """
         return self._call('GetIPCCallCount', (self._ihandle(),))
 
@@ -166,6 +166,5 @@ class Utils(_ApiResourceBase):
         E.g.: russian
 
         :rtype: str
-        :return:
         """
         return self._get_str('GetSteamUILanguage', (self._ihandle(),))

@@ -1,6 +1,5 @@
 import ctypes
 import logging
-from os import environ
 from collections import namedtuple
 from threading import local
 
@@ -18,9 +17,15 @@ class _EnumBase(object):
     """Enumeration base class."""
 
     aliases = {}
+    """qqq"""
 
     @classmethod
     def get_alias(cls, item_id):
+        """Returns item alias by ID.
+
+        :param int item_id: Item ID.
+        :rtype: str
+        """
         return cls.aliases.get(item_id)
 
 
@@ -55,16 +60,6 @@ class _ApiResourceBase(object):
     """
 
     _res_name = ''
-
-    @classmethod
-    def set_app_id(cls, app_id):
-        """Sets current application ID into environment.
-
-        :param str|int app_id:
-        :return:
-        """
-        if app_id:
-            environ['SteamAppId'] = str(app_id)  # SteamGameId
 
     @classmethod
     def _get_api_func_name(cls, short_name):
@@ -207,7 +202,7 @@ class _ApiResourceBase(object):
 
 class FriendFilter(object):
     """Filters to be provided to functions returning friends.
-    Can be combined using |.
+    Can be combined using `|`.
 
     """
     NONE = 0x00
