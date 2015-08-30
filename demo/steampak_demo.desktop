@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=0.1.0
+Name=Steampak Demo
+Comment=Steampak demonstrational application
+Terminal=false
+Type=Application
+Categories=Application;
+
+# This one should lead to steampak_demo.py
+Exec=/home/shared/idle/code/i/steampak/demo/steampak_demo.py
