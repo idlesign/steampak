@@ -7,6 +7,7 @@ from .friends import Friends
 from .groups import Groups
 from .utils import Utils
 from .apps import Applications
+from .overlay import Overlay
 
 
 class Api(_ApiResourceBase):
@@ -71,6 +72,18 @@ class Api(_ApiResourceBase):
 
         for app_id, app in api.apps.installed():
             print('%s: %s' % (app_id, app.name))
+
+    """
+
+    overlay = Overlay()
+    """Interface to Steam overlay.
+
+    Overlay-related functions only work with OpenGL/D3D applications and only
+    if Steam API is initialized before renderer device.
+
+    .. code-block:: python
+
+        api.overlay.activate()
 
     """
 
