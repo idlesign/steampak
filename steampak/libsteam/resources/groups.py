@@ -66,6 +66,14 @@ class Group(_ApiResourceBase):
         """
         return self._get_str('GetClanTag', (self._ihandle(), self.group_id))
 
+    def show_page(self):
+        """Shows overlay with group page."""
+        self._call('ActivateGameOverlayToUser', (self._ihandle(), 'steamid', self.group_id))
+
+    def open_chat(self):
+        """Shows overlay with group chat window."""
+        self._call('ActivateGameOverlayToUser', (self._ihandle(), 'chat', self.group_id))
+
 
 class Groups(_ApiResourceBase):
     """Exposes methods to get user groups data. Groups are also known as clans.

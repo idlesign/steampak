@@ -111,6 +111,38 @@ class User(_ApiResourceBase):
         """
         return self._get_bool('HasFriend', (self._ihandle(), self.user_id, flt))
 
+    def show_profile(self):
+        """Shows overlay with user profile."""
+        self._call('ActivateGameOverlayToUser', (self._ihandle(), 'steamid', self.user_id))
+
+    def show_stats(self):
+        """Shows overlay with user stats."""
+        self._call('ActivateGameOverlayToUser', (self._ihandle(), 'stats', self.user_id))
+
+    def show_achievements(self):
+        """Shows overlay with user achievements."""
+        self._call('ActivateGameOverlayToUser', (self._ihandle(), 'achievements', self.user_id))
+
+    def add_to_friends(self):
+        """Shows a dialog to add user as a friend."""
+        self._call('ActivateGameOverlayToUser', (self._ihandle(), 'friendadd', self.user_id))
+
+    def remove_from_friends(self):
+        """Shows a dialog to remove user from friends."""
+        self._call('ActivateGameOverlayToUser', (self._ihandle(), 'friendremove', self.user_id))
+
+    def accept_friend_invite(self):
+        """Shows a dialog to accept an incoming friend invite."""
+        self._call('ActivateGameOverlayToUser', (self._ihandle(), 'friendrequestaccept', self.user_id))
+
+    def ignore_friend_invite(self):
+        """Shows a dialog to ignore an incoming friend invite."""
+        self._call('ActivateGameOverlayToUser', (self._ihandle(), 'friendrequestignore', self.user_id))
+
+    def open_chat(self):
+        """Shows overlay with chat window."""
+        self._call('ActivateGameOverlayToUser', (self._ihandle(), 'chat', self.user_id))
+
 
 class CurrentUser(_ApiResourceBase):
     """Exposed methods related to a current Steam client user.

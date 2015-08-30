@@ -1,6 +1,23 @@
 steampak changelog
 ==================
 
+
+Unreleased
+----------
++ Added simple demo app for debugging purposes.
++ Open overlay.
++ Open user profile.
++ Open user chat window.
++ Open user stats window.
++ Open user achievements window.
++ Open user add as a friend dialog.
++ Open user remove from friends dialog.
++ Open user accept friend invitation dialog.
++ Open user ignore friend invitation dialog.
++ Open group page.
++ Open/join group chat.
+
+
 v0.1.0
 ------
 + Basic functionality.
