@@ -78,19 +78,37 @@ class Achievement(_ApiResourceBase):
             'GetAchievement', [self._ihandle(), self._name, ResultArg(ctypes.c_bool)])
         return unlocked
 
-    def unlock(self):
+    def unlock(self, store=True):
         """Unlocks the achievement.
 
-        :rtype: bool
-        """
-        return self._get_bool('SetAchievement', (self._ihandle(), self._name))
 
-    def clear(self):
+        :param bool store: Whether to send data to server immediately (as to get overlay notification).
+        :rtype: bool
+
+        """
+        result = self._get_bool('SetAchievement', (self._ihandle(), self._name))
+        result and store and self._store()
+        return result
+
+    def clear(self, store=True):
         """Clears (locks) the achievement.
 
         :rtype: bool
         """
-        return self._get_bool('ClearAchievement', (self._ihandle(), self._name))
+        result = self._get_bool('ClearAchievement', (self._ihandle(), self._name))
+        result and store and self._store()
+        return result
+
+    def _store(self):
+        """Stores the current achievement data on the server.
+
+        The same as `api.apps.current.achievements.store_stats()`.
+
+        Will get a callback when set and one callback for every new achievement.
+
+        :rtype: bool
+        """
+        return self._call('StoreStats', (self._ihandle(),))
 
     def get_unlock_info(self):
         """Returns tuple of unlock data: (is_unlocked, unlocked_datetime).
@@ -120,6 +138,15 @@ class CurrentApplicationAchievements(_ApiResourceBase):
     """Exposes methods to get to achievements."""
 
     _res_name = 'ISteamUserStats'
+
+    def store_stats(self):
+        """Stores the current data on the server.
+
+        Will get a callback when set and one callback for every new achievement.
+
+        :rtype: bool
+        """
+        return self._call('StoreStats', (self._ihandle(),))
 
     def __len__(self):
         """Returns a number of current game achievements..
