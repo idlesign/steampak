@@ -8,6 +8,7 @@ include docs/Makefile
 recursive-include docs .rst
 recursive-include docs .py
 
+recursive-include demo *
 recursive-include tests *
 recursive-include steampak .py
 
