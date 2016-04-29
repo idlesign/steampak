@@ -2,12 +2,13 @@
 """
 Demo application requires `PyOpenGL` and `PyOpenGL-accelerate` packages to be installed.
 
-1. Change LIBRARY_PATH (see below) to a proper path.
+1. Change LIBRARY_PATH (see below) to a proper path or put `libsteam_api.so` into `demo` directory
+   near this very file.
 
-2. Change `Exec` param of `steampak_demo.desktop` file to a proper path.
+2. Change `Exec` param in `steampak_demo.desktop` file to a proper path.
 
 3. Add `steampak_demo.desktop` into your game library:
-   Steam - Library - Add a game... - Add a non-Steam game ...
+   Steam -> Library -> Add a game... -> Add a non-Steam game ...
 
 4. Launch demo from Steam.
 
@@ -27,8 +28,6 @@ from steampak.libsteam.resources.apps import Application
 
 
 LIBRARY_PATH = '/home/shared/idle/code/i/steampak/libsteam_api.so'
-
-
 
 
 class SteampakDemo(object):
@@ -66,7 +65,6 @@ class SteampakDemo(object):
 
         elif key == 'p':
             self.api.overlay.activate('https://github.com/idlesign/steampak/')
-
 
     def run(self):
         glut.glutMainLoop()
