@@ -2,8 +2,8 @@ steampak changelog
 ==================
 
 
-Unreleased
-----------
+v0.2.0
+------
 + Added simple demo app for debugging purposes.
 + Open overlay.
 + Open user profile.
@@ -22,4 +22,3 @@ Unreleased
 v0.1.0
 ------
 + Basic functionality.
-
