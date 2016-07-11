@@ -1,4 +1,7 @@
-class SteamApiError(Exception):
+from ..exceptions import SteampakError
+
+
+class SteamApiError(SteampakError):
     """Base Steam API exception class."""
 
 
