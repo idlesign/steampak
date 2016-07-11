@@ -2,6 +2,17 @@ steampak changelog
 ==================
 
 
+Unreleased
+----------
++ Basic Steam Web API tools: User, Application, Market item, Card.
++ Added command line interface.
++ CLI: Get app cards
++ CLI: Get app card prices
++ CLI: Get market item price
++ CLI: Get user owned games
++ CLI: Get user gems count
+
+
 v0.2.0
 ------
 + Added simple demo app for debugging purposes.
