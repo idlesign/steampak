@@ -20,9 +20,21 @@ Description
 
 *Nicely packed tools to work with Steam APIs*
 
-Steam library bindings for Python programming language.
+* Steam library bindings for Python programming language.
 
-It allows your game to interact with features offered by Steam client and Steam platform.
+  It allows your game to interact with features offered by Steam client and Steam platform.
+
+* Tools for querying Steam Web resources.
+
+  Allowing access to applications and market data from within your Python application.
+
+* Command line utility.
+
+  To reach and analyse publicly available applications and market information.
+
+
+Steam API bindings example
+--------------------------
 
 A short example of API provided by Steam library, just to give a taste of it:
 
@@ -45,23 +57,34 @@ A short example of API provided by Steam library, just to give a taste of it:
     for user in api.friends():
         print(user.name)
 
-    # Print out some info from utils:
-    print(api.utils.country_code)
-
     # Current app achievements progress:
     for ach_name, ach in api.apps.current.achievements():
         print('%s (%s): %s' % (ach.title, ach_name, ach.get_unlock_info()))
-
-    # Installed applications titles:
-    for app_id, app in api.apps.installed():
-        print('%s: %s' % (app_id, app.name))
 
     # Do not forget to shutdown when done:
     api.shutdown()
 
 
-Roadmap
--------
+Command line client example
+---------------------------
+
+.. code-block:: bash
+
+    ; Get prices and siple analysis for Half-Life 2 cards.
+    $ steampak app 220 get_card_prices
+
+    ; Get `Gordon Freeman` card price.
+    $ steampak market item 220 "Gordon Freeman" get_price
+
+    ; Get games owned by `idlesign`.
+    $ steampak user idlesign get_games
+
+
+Use ``--help`` command option to get more information on available commands.
+
+
+Steam API bindings roadmap
+--------------------------
 
 **Work in progress. Callback-based functions support is not implemented.**
 

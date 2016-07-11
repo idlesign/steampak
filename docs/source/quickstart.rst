@@ -1,6 +1,9 @@
 Quickstart
 ==========
 
+Steam API example
+-----------------
+
 * First a path to steam library file. This library should be provided with your game.
   Library for various OS (`libsteam_api.so` or `steam_api.dll` or `libsteam_api.dylib`) is distributed
   with Steam SDK available for Steam partners at https://partner.steamgames.com/
@@ -48,3 +51,21 @@ When you're done, do not forget to shutdown API:
 
     # Do not forget to shutdown when done:
     api.shutdown()
+
+
+Command line interface example
+------------------------------
+
+.. code-block:: bash
+
+    ; Get prices and siple analysis for Half-Life 2 cards.
+    $ steampak app 220 get_card_prices
+
+    ; Get `Gordon Freeman` card price.
+    $ steampak market item 220 "Gordon Freeman" get_price
+
+    ; Get games owned by `idlesign`.
+    $ steampak user idlesign get_games
+
+
+Use ``--help`` command option to get more information on available commands.
