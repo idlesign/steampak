@@ -76,7 +76,7 @@ class Item(object):
 
     @classmethod
     def get_market_hash(cls, appid, title):
-        return '%s-%s' % (appid, title.replace('/', '-'))
+        return '%s-%s' % (appid, title.replace('/', '-').replace(':', ''))
 
 
 class Card(Item):
