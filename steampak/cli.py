@@ -123,6 +123,7 @@ def get_card_prices(ctx):
 
     for appid in appids:
         print_card_prices(appid, detailed=detailed)
+        click.echo('')
 
 
 @start.group()
