@@ -70,7 +70,7 @@ Command line client example
 
 .. code-block:: bash
 
-    ; Get prices and siple analysis for Half-Life 2 cards.
+    ; Get prices and simple analysis for Half-Life 2 cards.
     $ steampak app 220 get_card_prices
 
     ; Get `Gordon Freeman` card price.
