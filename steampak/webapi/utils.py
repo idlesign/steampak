@@ -10,6 +10,7 @@ from bs4 import BeautifulSoup
 LOGGER = logging.getLogger(__name__)
 
 # logging.basicConfig(level=logging.DEBUG)
+# logging.getLogger('requests').setLevel(logging.ERROR)
 
 
 def str_sub(string, **kwargs):
@@ -31,6 +32,8 @@ class DataFetcher(object):
 
         limits = self.fetch_limits
         if limits:
+            LOGGER.debug('Fetching limit %s imposed. Checking ...', limits)
+
             req_counter = _FETCHER_LIMITS.setdefault(limits, 0)
             req_max, req_timeout = limits
 

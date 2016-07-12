@@ -27,7 +27,7 @@ class Item(object):
         if not isinstance(app, Application):
             self.app = Application(app)
 
-        self._price_data = None
+        self._price_data = {}
 
     def get_price_data(self, currency=CURRENCY_RUB):
         url = URL_PRICE_OVERVIEW
@@ -42,13 +42,13 @@ class Item(object):
             val = val.split(' ')[0].replace(',', '.')
             return Decimal(val)
 
-        price_data = None
+        price_data = {}
         if json['success']:
 
             price_data = json
             price_data['lowest_price'] = format_money(price_data['lowest_price'])
-            price_data['median_price'] = format_money(price_data['median_price'])
-            price_data['volume'] = int(price_data['volume'])
+            price_data['median_price'] = format_money(price_data.get('median_price', '0'))
+            price_data['volume'] = int(price_data.get('volume', '0'))
             price_data['currency'] = CURRENCIES[currency]
 
         self._price_data = price_data
@@ -58,17 +58,17 @@ class Item(object):
     @property
     def price_lowest(self):
         not self._price_data and self.get_price_data()
-        return self._price_data['lowest_price']
+        return self._price_data.get('lowest_price', 0)
 
     @property
     def price_median(self):
         not self._price_data and self.get_price_data()
-        return self._price_data['median_price']
+        return self._price_data.get('median_price', 0)
 
     @property
     def price_currency(self):
         not self._price_data and self.get_price_data()
-        return self._price_data['currency']
+        return self._price_data.get('currency')
 
     @property
     def market_hash(self):
@@ -76,7 +76,7 @@ class Item(object):
 
     @classmethod
     def get_market_hash(cls, appid, title):
-        return '%s-%s' % (appid, title)
+        return '%s-%s' % (appid, title.replace('/', '-'))
 
 
 class Card(Item):

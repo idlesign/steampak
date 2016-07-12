@@ -7,7 +7,7 @@ from .webapi.resources.apps import Application
 from .webapi.resources.market import Item, TAG_ITEM_CLASS_BOOSTER
 
 
-def print_card_prices(appid):
+def print_card_prices(appid, detailed=True):
     app = Application(appid)
 
     click.secho('Card prices for `%s` [appid: %s]' % (app.title, appid), fg='green')
@@ -21,16 +21,16 @@ def print_card_prices(appid):
         return '%s: %s %s' % (card.title, card.price_lowest, card.price_currency)
 
     for card in cards.values():
-        click.echo(get_line(card))
+        detailed and click.echo(get_line(card))
         prices.append(card.price_lowest)
 
     avg_card = round(sum(prices) / cards_total, 2)
-    avg_booster = avg_card * 3
+    avg_3cards = avg_card * 3
 
     click.secho('* Total cards: %d' % len(cards), fg='green')
 
     click.secho('* Avg 1 card: %s' % avg_card, fg='blue')
-    click.secho('* Avg 3 cards: %s' % avg_booster, fg='blue')
+    click.secho('* Avg 3 cards: %s' % avg_3cards, fg='blue')
 
     if booster:
         click.secho('* Booster price: %s' % get_line(booster), fg='yellow')
@@ -108,10 +108,21 @@ def get_cards(ctx):
 @app.command()
 @click.pass_context
 def get_card_prices(ctx):
-    """Prints out lowest card prices for an application."""
+    """Prints out lowest card prices for an application.
+    Comma-separated list of application IDs is supported.
 
+    """
     appid = ctx.obj['appid']
-    print_card_prices(appid)
+
+    detailed = True
+
+    appids = [appid]
+    if ',' in appid:
+        appids = [appid.strip() for appid in appid.split(',')]
+        detailed = False
+
+    for appid in appids:
+        print_card_prices(appid, detailed=detailed)
 
 
 @start.group()
