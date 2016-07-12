@@ -4,7 +4,36 @@ from operator import itemgetter
 from steampak import VERSION
 from .webapi.resources.user import User
 from .webapi.resources.apps import Application
-from .webapi.resources.market import Item
+from .webapi.resources.market import Item, TAG_ITEM_CLASS_BOOSTER
+
+
+def print_card_prices(appid):
+    app = Application(appid)
+
+    click.secho('Card prices for `%s` [appid: %s]' % (app.title, appid), fg='green')
+
+    cards, booster = app.get_cards()
+
+    cards_total = len(cards)
+    prices = []
+
+    def get_line(card):
+        return '%s: %s %s' % (card.title, card.price_lowest, card.price_currency)
+
+    for card in cards.values():
+        click.echo(get_line(card))
+        prices.append(card.price_lowest)
+
+    avg_card = round(sum(prices) / cards_total, 2)
+    avg_booster = avg_card * 3
+
+    click.secho('* Total cards: %d' % len(cards), fg='green')
+
+    click.secho('* Avg 1 card: %s' % avg_card, fg='blue')
+    click.secho('* Avg 3 cards: %s' % avg_booster, fg='blue')
+
+    if booster:
+        click.secho('* Booster price: %s' % get_line(booster), fg='yellow')
 
 
 @click.group()
@@ -82,32 +111,7 @@ def get_card_prices(ctx):
     """Prints out lowest card prices for an application."""
 
     appid = ctx.obj['appid']
-    app = Application(appid)
-
-    click.secho('Card prices for `%s` [appid: %s]' % (app.title, appid), fg='green')
-
-    cards, booster = app.get_cards()
-
-    cards_total = len(cards)
-    prices = []
-
-    def get_line(card):
-        return '%s: %s %s' % (card.title, card.price_lowest, card.price_currency)
-
-    for card in cards.values():
-        click.echo(get_line(card))
-        prices.append(card.price_lowest)
-
-    avg_card = sum(prices) / cards_total
-    avg_booster = avg_card * 3
-
-    click.secho('* Total cards: %d' % len(cards), fg='green')
-
-    click.secho('* Avg 1 card: %s' % avg_card, fg='blue')
-    click.secho('* Avg 3 cards: %s' % avg_booster, fg='blue')
-
-    if booster:
-        click.secho('* Booster price: %s' % get_line(booster), fg='yellow')
+    print_card_prices(appid)
 
 
 @start.group()
@@ -141,6 +145,41 @@ def get_games(ctx):
         click.echo('%s [appid: %s]' % (game['title'], game['appid']))
 
     click.secho('Total gems owned by `%s`: %d' % (username, len(games)), fg='green')
+
+
+@user.command()
+@click.pass_context
+def get_booster_stats(ctx):
+    """Prints out price stats for booster packs available in Steam user inventory."""
+
+    username = ctx.obj['username']
+
+    inventory = User(username)._get_inventory_raw()
+    boosters = {}
+    for item in inventory['rgDescriptions'].values():
+
+        is_booster = False
+        tags = item['tags']
+        for tag in tags:
+            if tag['internal_name'] == TAG_ITEM_CLASS_BOOSTER:
+                is_booster = True
+                break
+
+        if not is_booster:
+            continue
+
+        appid = item['app_data']['appid']
+        title = item['name']
+
+        boosters[appid] = title
+
+    if not boosters:
+        click.secho('User `%s` has no booster packs' % username, fg='red', err=True)
+        return
+
+    for appid, title in boosters.items():
+        click.secho('Found booster: `%s`' % title, fg='blue')
+        print_card_prices(appid)
 
 
 def main():

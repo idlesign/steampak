@@ -4,13 +4,14 @@ from operator import attrgetter
 from ..settings import URL_COMMUNITY_BASE, URL_STORE_API_BASE, APPID_CARDS, APP_CATEGORY_CARDS
 from ..utils import str_sub, DataFetcher
 
+from .market import TAG_ITEM_CLASS_CARD, TAG_CARDBORDER_NORMAL
 
 URL_GAMECARDS = (
     URL_COMMUNITY_BASE +
     '/market/search/render/?'
     'category_' + APPID_CARDS + '_Game[]=tag_app_$appid&'
-    'category_' + APPID_CARDS + '_cardborder[]=tag_cardborder_0&'
-    'category_' + APPID_CARDS + '_item_class[]=tag_item_class_2&'
+    'category_' + APPID_CARDS + '_cardborder[]=tag_' + TAG_CARDBORDER_NORMAL + '&'
+    'category_' + APPID_CARDS + '_item_class[]=tag_' + TAG_ITEM_CLASS_CARD + '&'
     'appid=' + APPID_CARDS)
 
 URL_STORE_APP_DETAILS = URL_STORE_API_BASE + '/appdetails?appids=$appid'

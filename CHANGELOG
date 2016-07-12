@@ -11,6 +11,7 @@ Unreleased
 + CLI: Get market item price
 + CLI: Get user owned games
 + CLI: Get user gems count
++ CLI: Get price stats for user booster packs
 
 
 v0.2.0

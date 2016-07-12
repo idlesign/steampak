@@ -16,6 +16,7 @@ class User(object):
 
     def __init__(self, username):
         self.username = username
+        self._intentory_raw = None
 
     def _get_inventory_raw(self):
         url = str_sub(URL_USER_INVENTORY_PUBLIC_STEAM, username=self.username)
@@ -24,11 +25,15 @@ class User(object):
         if not response['success']:
             raise ResponseError(response['Error'], url)
 
+        self._intentory_raw = response
+
         return response
 
     @property
     def gems_total(self):
-        items = self._get_inventory_raw()['rgInventory']
+        not self._intentory_raw and self._get_inventory_raw()
+
+        items = self._intentory_raw['rgInventory']
         return sum([int(item['amount']) for item in items.values() if item['classid'] == INV_CLASSID_GEM])
 
     def get_games_owned(self):

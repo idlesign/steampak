@@ -6,10 +6,14 @@ from ..utils import DataFetcher
 
 URL_PRICE_OVERVIEW = URL_COMMUNITY_BASE + '/market/priceoverview/'
 
-
-_REQ_TIMEOUT = 60
-_REQ_MAX = 20
-_REQ_COUNTER = 0
+# Below are `internal_name` values for tags:
+# category: cardborder
+TAG_CARDBORDER_NORMAL = 'cardborder_0'
+TAG_CARDBORDER_FOIL = 'cardborder_1'
+# category: item_class
+TAG_ITEM_CLASS_CARD = 'item_class_2'
+TAG_ITEM_CLASS_BOOSTER = 'item_class_5'
+TAG_ITEM_CLASS_GEM = 'item_class_7'
 
 
 class Item(object):
