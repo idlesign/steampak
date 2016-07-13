@@ -59,10 +59,10 @@ Command line interface example
 .. code-block:: bash
 
     ; Get prices and simple analysis for Half-Life 2 cards.
-    $ steampak app 220 get_card_prices
+    $ steampak app 220 get_card_prices --currency USD
 
     ; Get `Gordon Freeman` card price.
-    $ steampak market item 220 "Gordon Freeman" get_price
+    $ steampak market item 220 "Gordon Freeman" get_price --currency GBP
 
     ; Get games owned by `idlesign`.
     $ steampak user idlesign get_games

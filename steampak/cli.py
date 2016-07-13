@@ -1,13 +1,22 @@
 import click
 from operator import itemgetter
+from functools import partial
 
 from steampak import VERSION
+from .webapi.settings import CURRENCIES, CURRENCY_RUB
 from .webapi.resources.user import User
 from .webapi.resources.apps import Application
 from .webapi.resources.market import Item, TAG_ITEM_CLASS_BOOSTER
 
 
-def print_card_prices(appid, detailed=True):
+opt_currency = partial(
+    click.option, '--currency',
+    help='Currency ISO code. Default: %s. Variants: %s. ' % (CURRENCIES[CURRENCY_RUB], ', '.join(CURRENCIES.values())),
+    default=CURRENCIES[CURRENCY_RUB])
+
+
+def print_card_prices(appid, currency, detailed=True):
+
     app = Application(appid)
 
     click.secho('Card prices for `%s` [appid: %s]' % (app.title, appid), fg='green')
@@ -17,7 +26,12 @@ def print_card_prices(appid, detailed=True):
     cards_total = len(cards)
     prices = []
 
+    if not cards_total:
+        click.secho('This app has no cards.', fg='red', err=True)
+        return
+
     def get_line(card):
+        card.get_price_data(currency)
         return '%s: %s %s' % (card.title, card.price_lowest, card.price_currency)
 
     for card in cards.values():
@@ -58,13 +72,15 @@ def item(ctx, appid, title):
 
 
 @item.command()
+@opt_currency()
 @click.pass_context
-def get_price(ctx):
+def get_price(ctx, currency):
     """Prints out market item price."""
     appid = ctx.obj['appid']
     title = ctx.obj['title']
 
     item_ = Item(appid, title)
+    item_.get_price_data(currency)
 
     click.secho('Lowest price: %s %s' % (item_.price_lowest, item_.price_currency), fg='green')
 
@@ -88,7 +104,7 @@ def get_cards(ctx):
     click.secho('Cards for `%s` [appid: %s]' % (app.title, appid), fg='green')
 
     if not app.has_cards:
-        click.secho('This app has no cards', fg='red', err=True)
+        click.secho('This app has no cards.', fg='red', err=True)
         return
 
     cards, booster = app.get_cards()
@@ -106,8 +122,9 @@ def get_cards(ctx):
 
 
 @app.command()
+@opt_currency()
 @click.pass_context
-def get_card_prices(ctx):
+def get_card_prices(ctx, currency):
     """Prints out lowest card prices for an application.
     Comma-separated list of application IDs is supported.
 
@@ -122,7 +139,7 @@ def get_card_prices(ctx):
         detailed = False
 
     for appid in appids:
-        print_card_prices(appid, detailed=detailed)
+        print_card_prices(appid, currency, detailed=detailed)
         click.echo('')
 
 
@@ -160,8 +177,9 @@ def get_games(ctx):
 
 
 @user.command()
+@opt_currency()
 @click.pass_context
-def get_booster_stats(ctx):
+def get_booster_stats(ctx, currency):
     """Prints out price stats for booster packs available in Steam user inventory."""
 
     username = ctx.obj['username']
@@ -191,7 +209,7 @@ def get_booster_stats(ctx):
 
     for appid, title in boosters.items():
         click.secho('Found booster: `%s`' % title, fg='blue')
-        print_card_prices(appid)
+        print_card_prices(appid, currency)
 
 
 def main():
