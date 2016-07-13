@@ -1,8 +1,10 @@
+import re
 from decimal import Decimal
 
 from ..settings import CURRENCY_RUB, URL_COMMUNITY_BASE, APPID_CARDS, CURRENCIES
 from ..utils import DataFetcher
 
+RE_CURRENCY = re.compile(r'[^\d]*(\d+[.,]\d+)[^\d]*', re.U)
 
 URL_PRICE_OVERVIEW = URL_COMMUNITY_BASE + '/market/priceoverview/'
 
@@ -39,7 +41,11 @@ class Item(object):
         }, fetch_limits=(20, 60)).fetch_json()
 
         def format_money(val):
-            val = val.split(' ')[0].replace(',', '.')
+            match = RE_CURRENCY.search(val)
+            if match:
+                val = match.group(1)
+
+            val = val.replace(',', '.')
             return Decimal(val)
 
         price_data = {}
