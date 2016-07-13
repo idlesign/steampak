@@ -34,6 +34,10 @@ class Item(object):
     def get_price_data(self, currency=CURRENCY_RUB):
         url = URL_PRICE_OVERVIEW
 
+        if not isinstance(currency, int):
+            # Consider ISO currency code.
+            currency = {cur_code: cur_id for cur_id, cur_code in CURRENCIES.items()}.get(currency)
+
         json = DataFetcher(url, params={
             'appid': APPID_CARDS,
             'currency': currency,
