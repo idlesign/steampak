@@ -2,6 +2,11 @@ steampak changelog
 ==================
 
 
+Unreleased
+----------
+* Fixed market item price parsing (`decimal.InvalidOperation` error).
+
+
 v0.3.0
 ------
 + Basic Steam Web API tools: User, Application, Market item, Card.

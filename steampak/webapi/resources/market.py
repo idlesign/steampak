@@ -4,7 +4,7 @@ from decimal import Decimal
 from ..settings import CURRENCY_RUB, URL_COMMUNITY_BASE, APPID_CARDS, CURRENCIES
 from ..utils import DataFetcher
 
-RE_CURRENCY = re.compile(r'[^\d]*(\d+[.,]\d+)[^\d]*', re.U)
+RE_CURRENCY = re.compile(r'[^\d]*(\d+([.,]\d+)?)[^\d]*', re.U)
 
 URL_PRICE_OVERVIEW = URL_COMMUNITY_BASE + '/market/priceoverview/'
 
