@@ -1,6 +1,7 @@
 from ..settings import URL_COMMUNITY_BASE, APPID_STEAM
 from ..utils import str_sub, DataFetcher
 from ..exceptions import ResponseError
+from .market import Item, Card, TAG_ITEM_CLASS_CARD
 
 
 URL_USER_BASE = URL_COMMUNITY_BASE + '/id/$username'
@@ -28,6 +29,29 @@ class User(object):
         self._intentory_raw = response
 
         return response
+
+    def traverse_inventory(self, item_filter=None):
+        """Generates market Item objects for each inventory item.
+
+        :param str item_filter: See `TAG_ITEM_CLASS_` contants from .market module.
+
+        """
+        not self._intentory_raw and self._get_inventory_raw()
+
+        for item in self._intentory_raw['rgDescriptions'].values():
+            tags = item['tags']
+            for tag in tags:
+                internal_name = tag['internal_name']
+                if item_filter is None or internal_name == item_filter:
+
+                    item_type = Item
+                    if internal_name == TAG_ITEM_CLASS_CARD:
+                        item_type = Card
+
+                    appid = item['app_data']['appid']
+                    title = item['name']
+
+                    yield item_type(appid, title)
 
     @property
     def gems_total(self):

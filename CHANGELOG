@@ -4,6 +4,7 @@ steampak changelog
 
 Unreleased
 ----------
++ Added User.traverse_inventory() method.
 * Fixed market item price parsing (`decimal.InvalidOperation` error).
 
 
