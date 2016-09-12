@@ -5,6 +5,7 @@ steampak changelog
 Unreleased
 ----------
 + Added User.traverse_inventory() method.
++ Implemented `get_cards_stats` CLI command.
 * Fixed market item price parsing (`decimal.InvalidOperation` error).
 
 

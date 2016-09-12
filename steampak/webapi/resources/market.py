@@ -86,6 +86,7 @@ class Item(object):
 
     @classmethod
     def get_market_hash(cls, appid, title):
+        # todo sometimes : is used in hash and shouldn't be stripped
         return '%s-%s' % (appid, title.replace('/', '-').replace(':', ''))
 
 
