@@ -2,6 +2,11 @@ steampak changelog
 ==================
 
 
+Unreleased
+----------
+* Adds features advertised but missing from 0.4.0
+
+
 v0.4.0
 ------
 + Added mysterious [and sales] cards handling.
