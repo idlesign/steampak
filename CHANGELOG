@@ -2,6 +2,12 @@ steampak changelog
 ==================
 
 
+Unreleased
+----------
++ Added mysterious [and sales] cards handling.
++ Some Web API changes adopted.
+
+
 v0.3.1
 ------
 + Added User.traverse_inventory() method.
