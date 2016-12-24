@@ -23,6 +23,9 @@ class User(object):
         url = str_sub(URL_USER_INVENTORY_PUBLIC_STEAM, username=self.username)
 
         response = DataFetcher(url).fetch_json()
+        if not response:
+            raise ResponseError('No response', url)
+
         if not response['success']:
             raise ResponseError(response['Error'], url)
 
@@ -48,7 +51,7 @@ class User(object):
                     if internal_name == TAG_ITEM_CLASS_CARD:
                         item_type = Card
 
-                    appid = item['app_data']['appid']
+                    appid = item['market_fee_app']
                     title = item['name']
 
                     yield item_type(appid, title)
