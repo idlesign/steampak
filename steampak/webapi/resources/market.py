@@ -14,6 +14,8 @@ TAG_CARDBORDER_NORMAL = 'cardborder_0'
 TAG_CARDBORDER_FOIL = 'cardborder_1'
 # category: item_class
 TAG_ITEM_CLASS_CARD = 'item_class_2'
+TAG_ITEM_CLASS_BACKGROUND = 'item_class_3'
+TAG_ITEM_CLASS_EMOTICON = 'item_class_4'
 TAG_ITEM_CLASS_BOOSTER = 'item_class_5'
 TAG_ITEM_CLASS_GEM = 'item_class_7'
 
@@ -56,9 +58,9 @@ class Item(object):
         if json['success']:
 
             price_data = json
-            price_data['lowest_price'] = format_money(price_data['lowest_price'])
+            price_data['lowest_price'] = format_money(price_data.get('lowest_price', '0'))
             price_data['median_price'] = format_money(price_data.get('median_price', '0'))
-            price_data['volume'] = int(price_data.get('volume', '0'))
+            price_data['volume'] = format_money(price_data.get('volume', '0'))
             price_data['currency'] = CURRENCIES[currency]
 
         self._price_data = price_data

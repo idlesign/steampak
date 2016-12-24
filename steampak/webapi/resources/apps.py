@@ -25,8 +25,13 @@ class Application(object):
 
     def _get_data_raw(self):
         url = str_sub(URL_STORE_APP_DETAILS, appid=self.appid)
-        data = DataFetcher(url).fetch_json()
-        data = data[self.appid]['data']
+        response = DataFetcher(url).fetch_json()
+        data = response[self.appid]
+
+        if not data['success']:
+            return {}
+
+        data = data['data']
         self._data_raw = data
         return data
 
@@ -41,7 +46,7 @@ class Application(object):
     @property
     def title(self):
         not self._data_raw and self._get_data_raw()
-        return self._data_raw['name']
+        return self._data_raw.get('name', '<unresolved %s>' % self.appid)
 
     def get_cards(self):
         from .market import Card
