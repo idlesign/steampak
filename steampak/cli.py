@@ -231,7 +231,7 @@ def get_booster_stats(ctx, currency):
         if not is_booster:
             continue
 
-        appid = item['app_data']['appid']
+        appid = item['market_fee_app']
         title = item['name']
 
         boosters[appid] = title

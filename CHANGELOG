@@ -2,6 +2,11 @@ steampak changelog
 ==================
 
 
+Unreleased
+----------
+* Fixed get_booster_stats() crash.
+
+
 v0.4.1
 ------
 * Adds features advertised but missing from 0.4.0
