@@ -46,9 +46,12 @@ class DataFetcher(object):
             _FETCHER_LIMITS[limits] += 1
 
         LOGGER.debug('Fetching data from %s ...', self.url)
-        return requests.get(self.url, self.params, headers={
+
+        response = requests.get(self.url, self.params, headers={
             'User-Agent': 'Valve/Steam HTTP Client 1.0 (tenfoot)',
         })
+        response.encoding = 'utf-8'
+        return response
 
     def fetch_json(self):
         json = self.fetch_data().json()
