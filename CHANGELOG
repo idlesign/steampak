@@ -2,8 +2,8 @@ steampak changelog
 ==================
 
 
-Unreleased
-----------
+v0.4.2
+------
 * CLI: Fixed get_booster_stats() crash.
 * Web API: Fixed encoding problems (e.g. as seen in apps titles).
 
