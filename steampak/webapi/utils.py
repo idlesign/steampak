@@ -51,6 +51,10 @@ class DataFetcher(object):
             'User-Agent': 'Valve/Steam HTTP Client 1.0 (tenfoot)',
         })
         response.encoding = 'utf-8'
+
+        if response.status_code == 429:  # 429 Too Many Requests
+            response = self.fetch_data()
+
         return response
 
     def fetch_json(self):

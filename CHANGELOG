@@ -2,6 +2,11 @@ steampak changelog
 ==================
 
 
+Unreleased
+----------
+* Web API: DataFetcher now handles `Too Many Requests` responses.
+
+
 v0.4.2
 ------
 * CLI: Fixed get_booster_stats() crash.
