@@ -251,9 +251,10 @@ def get_booster_stats(ctx, currency):
 
 @user.command()
 @opt_currency()
+@click.option('--appid', help='Allows getting stats only for certain applications.', multiple=True)
 @click.option('--skip-owned', help='Do not get prices for cards already owned.', is_flag=True)
 @click.pass_context
-def get_cards_stats(ctx, currency, skip_owned):
+def get_cards_stats(ctx, currency, skip_owned, appid):
     """Prints out price stats for cards available in Steam user inventory."""
 
     username = ctx.obj['username']
@@ -261,14 +262,15 @@ def get_cards_stats(ctx, currency, skip_owned):
 
     inventory = User(username).traverse_inventory(item_filter=TAG_ITEM_CLASS_CARD)
     for item in inventory:
-        appid = item.app.appid
-        cards_by_app[appid].append(item)
+        appid_ = item.app.appid
+        if appid_ in appid:
+            cards_by_app[appid_].append(item)
 
     if not cards_by_app:
         click.secho('User `%s` has no cards' % username, fg='red', err=True)
         return
 
-    for appid, cards in cards_by_app.items():
+    for appid_, cards in cards_by_app.items():
         app = cards[0].app
         print_card_prices(app.appid, currency, owned_cards=[card.title for card in cards], skip_owned=skip_owned)
 
