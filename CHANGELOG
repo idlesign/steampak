@@ -4,7 +4,8 @@ steampak changelog
 
 Unreleased
 ----------
-* Web API: DataFetcher now handles `Too Many Requests` responses.
++ CLI: `get_cards_stats` command now accpets `skip-owned` option.
++ Web API: DataFetcher now handles `Too Many Requests` responses.
 
 
 v0.4.2

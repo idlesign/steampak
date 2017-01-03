@@ -16,7 +16,7 @@ opt_currency = partial(
     default=CURRENCIES[CURRENCY_RUB])
 
 
-def print_card_prices(appid, currency, detailed=True, owned_cards=None):
+def print_card_prices(appid, currency, detailed=True, owned_cards=None, skip_owned=False):
 
     owned_cards = owned_cards or []
 
@@ -42,6 +42,9 @@ def print_card_prices(appid, currency, detailed=True, owned_cards=None):
     for card in cards.values():
 
         is_owned = card.title in owned_cards
+
+        if is_owned and skip_owned:
+            continue
 
         if detailed:
             prefix = ''
@@ -247,8 +250,9 @@ def get_booster_stats(ctx, currency):
 
 @user.command()
 @opt_currency()
+@click.option('--skip-owned', help='Do not get prices for cards already owned.', is_flag=True)
 @click.pass_context
-def get_cards_stats(ctx, currency):
+def get_cards_stats(ctx, currency, skip_owned):
     """Prints out price stats for cards available in Steam user inventory."""
 
     username = ctx.obj['username']
@@ -265,7 +269,7 @@ def get_cards_stats(ctx, currency):
 
     for appid, cards in cards_by_app.items():
         app = cards[0].app
-        print_card_prices(app.appid, currency, owned_cards=[card.title for card in cards])
+        print_card_prices(app.appid, currency, owned_cards=[card.title for card in cards], skip_owned=skip_owned)
 
 
 def main():
