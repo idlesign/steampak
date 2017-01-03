@@ -16,7 +16,7 @@ opt_currency = partial(
     default=CURRENCIES[CURRENCY_RUB])
 
 
-def print_card_prices(appid, currency, detailed=True, owned_cards=None, skip_owned=False):
+def print_card_prices(appid, currency, detailed=True, owned_cards=None, skip_owned=False, foil=False):
 
     owned_cards = owned_cards or []
 
@@ -24,7 +24,13 @@ def print_card_prices(appid, currency, detailed=True, owned_cards=None, skip_own
 
     click.secho('Card prices for `%s` [appid: %s]' % (app.title, appid), fg='green')
 
-    cards, booster = app.get_cards()
+    cardborder_normal = True
+    cardborder_foil = False
+    if foil:
+        cardborder_normal = False
+        cardborder_foil = True
+
+    cards, booster = app.get_cards(cardborder_normal, cardborder_foil)
 
     price_cards_owned = 0
     price_cards_wanted = 0
@@ -253,8 +259,9 @@ def get_booster_stats(ctx, currency):
 @opt_currency()
 @click.option('--appid', help='Allows getting stats only for certain applications.', multiple=True)
 @click.option('--skip-owned', help='Do not get prices for cards already owned.', is_flag=True)
+@click.option('--foil', help='Get stats for foil cards.', is_flag=True)
 @click.pass_context
-def get_cards_stats(ctx, currency, skip_owned, appid):
+def get_cards_stats(ctx, currency, skip_owned, appid, foil):
     """Prints out price stats for cards available in Steam user inventory."""
 
     username = ctx.obj['username']
@@ -272,7 +279,12 @@ def get_cards_stats(ctx, currency, skip_owned, appid):
 
     for appid_, cards in cards_by_app.items():
         app = cards[0].app
-        print_card_prices(app.appid, currency, owned_cards=[card.title for card in cards], skip_owned=skip_owned)
+        print_card_prices(
+            app.appid, currency,
+            owned_cards=[card.title for card in cards],
+            skip_owned=skip_owned,
+            foil=foil,
+        )
 
 
 def main():

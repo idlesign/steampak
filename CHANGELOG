@@ -5,6 +5,7 @@ steampak changelog
 Unreleased
 ----------
 + CLI: `get_cards_stats` command now accepts `skip-owned` option.
++ CLI: `get_cards_stats` command now accepts `foil` option.
 + CLI: `get_cards_stats` command now accepts `appid` options.
 + Web API: DataFetcher now handles `Too Many Requests` responses.
 + Web API: `Application.get_cards()` now accepts cardboarder filters.
