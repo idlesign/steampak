@@ -72,7 +72,7 @@ def print_card_prices(appid, currency, detailed=True, owned_cards=None, skip_own
 
     click.secho('* Total cards: %d' % count_cards_total, fg='green')
 
-    if owned_cards:
+    if owned_cards and not skip_owned:
         click.secho('* Owned cards: %d' % len(owned_cards), fg='green')
         click.secho('* Price cards owned: %s' % price_cards_owned, fg='blue')
         click.secho('* Price cards wanted: %s' % price_cards_wanted, fg='blue')
