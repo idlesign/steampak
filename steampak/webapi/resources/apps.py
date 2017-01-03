@@ -4,17 +4,37 @@ from operator import attrgetter
 from ..settings import URL_COMMUNITY_BASE, URL_STORE_API_BASE, APPID_CARDS, APP_CATEGORY_CARDS
 from ..utils import str_sub, DataFetcher
 
-from .market import TAG_ITEM_CLASS_CARD, TAG_CARDBORDER_NORMAL
+from .market import TAG_ITEM_CLASS_CARD, TAG_CARDBORDER_NORMAL, TAG_CARDBORDER_FOIL
+
 
 URL_GAMECARDS = (
     URL_COMMUNITY_BASE +
     '/market/search/render/?'
     'category_' + APPID_CARDS + '_Game[]=tag_app_$appid&'
-    'category_' + APPID_CARDS + '_cardborder[]=tag_' + TAG_CARDBORDER_NORMAL + '&'
+    '$cardboarder&'
     'category_' + APPID_CARDS + '_item_class[]=tag_' + TAG_ITEM_CLASS_CARD + '&'
     'appid=' + APPID_CARDS)
 
 URL_STORE_APP_DETAILS = URL_STORE_API_BASE + '/appdetails?appids=$appid'
+
+
+def get_filter_cardborder(*cardborder_type):
+    """Returns game cards URL filter for a given cardborder
+    type (TAG_CARDBORDER_NORMAL / TAG_CARDBORDER_FOIL).
+
+    To be used in URL_GAMECARDS.
+
+    :param str|unicode cardborder_type:
+    :rtype: str|unicode
+    """
+    filter_ = []
+
+    for type_ in cardborder_type:
+        if not type_:
+            continue
+        filter_.append('category_' + APPID_CARDS + '_cardborder[]=tag_' + type_)
+
+    return '&'.join(filter_)
 
 
 class Application(object):
@@ -48,10 +68,16 @@ class Application(object):
         not self._data_raw and self._get_data_raw()
         return self._data_raw.get('name', '<unresolved %s>' % self.appid)
 
-    def get_cards(self):
+    def get_cards(self, normal=True, foil=False):
         from .market import Card
 
-        url = str_sub(URL_GAMECARDS, appid=self.appid)
+        url = str_sub(
+            URL_GAMECARDS,
+            appid=self.appid,
+            cardboarder=get_filter_cardborder(
+                normal and TAG_CARDBORDER_NORMAL,
+                foil and TAG_CARDBORDER_FOIL))
+
         data = DataFetcher(url).fetch_json()
         soup = DataFetcher.get_soup(data['results_html'])
 
