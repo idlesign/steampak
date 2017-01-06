@@ -270,7 +270,7 @@ def get_cards_stats(ctx, currency, skip_owned, appid, foil):
     inventory = User(username).traverse_inventory(item_filter=TAG_ITEM_CLASS_CARD)
     for item in inventory:
         appid_ = item.app.appid
-        if appid_ in appid:
+        if not appid or appid_ in appid:
             cards_by_app[appid_].append(item)
 
     if not cards_by_app:
