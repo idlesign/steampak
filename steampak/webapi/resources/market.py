@@ -44,7 +44,7 @@ class Item(object):
             'appid': APPID_CARDS,
             'currency': currency,
             'market_hash_name': self.market_hash
-        }, fetch_limits=(20, 60)).fetch_json()
+        }).fetch_json()
 
         def format_money(val):
             match = RE_CURRENCY.search(val)

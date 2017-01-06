@@ -18,32 +18,16 @@ def str_sub(string, **kwargs):
     return tpl.safe_substitute(**kwargs)
 
 
-_FETCHER_LIMITS = {}
-
-
 class DataFetcher(object):
 
-    def __init__(self, url, params=None, fetch_limits=None):
+    def __init__(self, url, params=None):
         self.url = url
         self.params = params
-        self.fetch_limits = fetch_limits
 
-    def fetch_data(self):
+    def fetch_data(self, req_timeout=0):
 
-        limits = self.fetch_limits
-        if limits:
-            LOGGER.debug('Fetching limit %s imposed. Checking ...', limits)
-
-            req_counter = _FETCHER_LIMITS.setdefault(limits, 0)
-            req_max, req_timeout = limits
-
-            if req_counter == req_max:
-                LOGGER.debug('Fetching limit exceeded waiting %d seconds ...', req_timeout)
-
-                sleep(req_timeout)
-                _FETCHER_LIMITS[limits] = 0
-
-            _FETCHER_LIMITS[limits] += 1
+        if req_timeout:
+            sleep(req_timeout)
 
         LOGGER.debug('Fetching data from %s ...', self.url)
 
@@ -53,7 +37,9 @@ class DataFetcher(object):
         response.encoding = 'utf-8'
 
         if response.status_code == 429:  # 429 Too Many Requests
-            response = self.fetch_data()
+            pause_sec = 60
+            LOGGER.debug('Request limit hit for %s. Waiting for %d seconds ...', self.url, pause_sec)
+            response = self.fetch_data(pause_sec)
 
         return response
 
