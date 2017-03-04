@@ -33,6 +33,9 @@ setup(
     zip_safe=False,
 
     install_requires=[],
+    extras_require={
+        'webapi': ['requests', 'click', 'bs4']
+    },
     scripts=SCRIPTS,
 
     classifiers=[
