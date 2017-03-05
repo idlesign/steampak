@@ -2,8 +2,8 @@ steampak changelog
 ==================
 
 
-Unreleased
-----------
+v0.5.0
+------
 + CLI: `get_cards_stats` command now accepts `skip-owned` option.
 + CLI: `get_cards_stats` command now accepts `foil` option.
 + CLI: `get_cards_stats` command now accepts `appid` options.
