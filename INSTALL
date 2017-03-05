@@ -29,3 +29,9 @@ Alternatively you can install steampak from PyPI:
 Use `-U` flag for upgrade:
 
     pip install -U steampak
+
+
+To also install the dependencies for the Web API:
+
+    pip install steampak.webapi
+
