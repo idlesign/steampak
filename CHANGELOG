@@ -7,6 +7,7 @@ Unreleased
 + CLI: `get_cards_stats` command now accepts `skip-owned` option.
 + CLI: `get_cards_stats` command now accepts `foil` option.
 + CLI: `get_cards_stats` command now accepts `appid` options.
++ CLI: launcher script is now Windows compatible.
 + Web API: DataFetcher now handles `Too Many Requests` responses.
 + Web API: `Application.get_cards()` now accepts cardboarder filters.
 + `pip install steampak[extra]` now installs extra dependencies (for CLI, Web API)

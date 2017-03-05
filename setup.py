@@ -1,16 +1,10 @@
 import os
 from setuptools import setup
+
 from steampak import VERSION
 
 
 PATH_BASE = os.path.dirname(__file__)
-PATH_BIN = os.path.join(PATH_BASE, 'bin')
-
-
-SCRIPTS = None
-if os.path.exists(PATH_BIN):
-    SCRIPTS = [os.path.join('bin', f) for f in os.listdir(PATH_BIN) if os.path.join(PATH_BIN, f)]
-
 
 f = open(os.path.join(PATH_BASE, 'README.rst'))
 README = f.read()
@@ -37,7 +31,10 @@ setup(
         'webapi': ['requests', 'bs4'],
         'extra': ['requests', 'bs4', 'click'],
     },
-    scripts=SCRIPTS,
+
+    entry_points={
+        'console_scripts': ['steampak = steampak.cli:main'],
+    },
 
     classifiers=[
         # As in https://pypi.python.org/pypi?:action=list_classifiers
@@ -50,6 +47,7 @@ setup(
         'Programming Language :: Python :: 3.3',
         'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.6',
         'License :: OSI Approved :: BSD License'
     ],
 )
