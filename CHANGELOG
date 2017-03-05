@@ -9,6 +9,7 @@ Unreleased
 + CLI: `get_cards_stats` command now accepts `appid` options.
 + Web API: DataFetcher now handles `Too Many Requests` responses.
 + Web API: `Application.get_cards()` now accepts cardboarder filters.
++ `pip install steampak[extra]` now installs extra dependencies (for CLI, Web API)
 
 
 v0.4.2

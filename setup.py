@@ -34,7 +34,8 @@ setup(
 
     install_requires=[],
     extras_require={
-        'webapi': ['requests', 'click', 'bs4']
+        'webapi': ['requests', 'bs4'],
+        'extra': ['requests', 'bs4', 'click'],
     },
     scripts=SCRIPTS,
 

@@ -31,7 +31,10 @@ Use `-U` flag for upgrade:
     pip install -U steampak
 
 
-To also install the dependencies for the Web API:
+Extras
+------
 
-    pip install steampak.webapi
+To also install extra dependencies (for CLI, and Steam Web API):
+
+    pip install steampak[extra]
 

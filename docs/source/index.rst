@@ -29,7 +29,16 @@ Requirements
 * Python 2.7+, 3.3+
 * Steam API library 1.32+ from Steamworks SDK
 * Linux (not tested with libraries for OSX or Windows)
-* 'requests', 'click', 'BeautifulSoup' Python packages (for Web API related stuff)
+
+Optional dependencies
+---------------------
+
+To install all dependencies for `steampak`::
+
+  > pip install steampak[extra]
+
+* `requests`, `BeautifulSoup` (for Web API related stuff)
+* `click` (for CLI)
 
 
 Table of Contents
