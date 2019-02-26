@@ -26,8 +26,8 @@ Description
 Requirements
 ------------
 
-* Python 2.7+, 3.3+
-* Steam API library 1.32+ from Steamworks SDK
+* Python 3.6+
+* Steam API library 1.42+ from Steamworks SDK (latest tested version - 1.42)
 * Linux (not tested with libraries for OSX or Windows)
 
 Optional dependencies

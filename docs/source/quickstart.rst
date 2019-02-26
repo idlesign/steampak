@@ -6,7 +6,7 @@ Steam API example
 
 * First a path to steam library file. This library should be provided with your game.
   Library for various OS (`libsteam_api.so` or `steam_api.dll` or `libsteam_api.dylib`) is distributed
-  with Steam SDK available for Steam partners at https://partner.steamgames.com/
+  with Steam SDK available for Steam partners at https://partner.steamgames.com/downloads/list
 
 * Second. Your need to know application (game) identifier provided by Steam.
   Pass it as a parameter or put `steam_appid.txt` file with that ID in your game folder.
