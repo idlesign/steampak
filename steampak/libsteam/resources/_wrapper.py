@@ -45,6 +45,10 @@ with lib.functions_prefix('SteamAPI_'):
     def get_h_pipe() -> int:
         ...
 
+    @lib.f('GetSteamInstallPath')
+    def get_install_path() -> str:
+        ...
+
     with lib.functions_prefix('ISteamUser_'):
 
         class User(CObject):
@@ -177,12 +181,12 @@ with lib.functions_prefix('SteamAPI_'):
             """"""
 
             @lib.m('GetAppID')
-            def get_app_id(self, cfunc) -> int:
-                return cfunc()
+            def get_app_id(self) -> int:
+                ...
 
             @lib.m('GetSteamUILanguage')
-            def get_ui_language(self, cfunc) -> str:
-                return cfunc(self)
+            def get_ui_language(self) -> str:
+                ...
 
             @lib.m('GetIPCountry')
             def get_country_code(self) -> str:
@@ -203,17 +207,25 @@ with lib.functions_prefix('SteamAPI_'):
             @lib.m('GetSecondsSinceAppActive')
             def get_seconds_app_active(self) -> int:
                 ...
-    
+
             @lib.m('GetIPCCallCount')
             def get_ipc_call_count(self) -> int:
                 ...
-    
+
+            @lib.m('GetConnectedUniverse')
+            def get_connected_universe(self) -> int:
+                ...
+
             @lib.m('IsOverlayEnabled')
             def get_overlay_enabled(self) -> bool:
                 ...
     
             @lib.m('IsSteamRunningInVR')
             def get_vr_mode(self) -> bool:
+                ...
+
+            @lib.m('SetOverlayNotificationPosition')
+            def set_notify_position(self, position: int) -> int:
                 ...
 
     with lib.functions_prefix('ISteamClient_'):

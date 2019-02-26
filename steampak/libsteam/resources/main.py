@@ -1,16 +1,15 @@
-from os import path, environ
+from os import environ
 
-from ..exceptions import SteamApiStartupError
-from .base import _ApiResourceBase, get_library
-from .user import CurrentUser
+from .apps import Applications
 from .friends import Friends
 from .groups import Groups
-from .utils import Utils
-from .apps import Applications
 from .overlay import Overlay
+from .user import CurrentUser
+from .utils import Utils
+from ..exceptions import SteamApiStartupError
 
 
-class Api(_ApiResourceBase):
+class Api:
     """Main entry point of Steam API.
 
     It is aliased as ``steampak.SteamApi``.
@@ -56,15 +55,6 @@ class Api(_ApiResourceBase):
 
     """
 
-    utils = Utils()
-    """Interface to various utilities.
-
-    .. code-block:: python
-
-        print(api.utils.ui_language)
-
-    """
-
     apps = Applications()
     """Interface to applications (games).
 
@@ -99,7 +89,12 @@ class Api(_ApiResourceBase):
         :param str|int app_id: Application (game) identifier.
             Pass it as a parameter or put `steam_appid.txt` file with that ID in your game folder.
         """
-        get_library(library_path)
+        environ['STEAM_API_LIB'] = library_path
+
+        from . import _wrapper
+
+        self._lib = _wrapper
+        self._client = None
         self._app_id = app_id
 
         if self.steam_running:
@@ -112,10 +107,34 @@ class Api(_ApiResourceBase):
         :raises: SteamApiStartupError
         """
         self.set_app_id(app_id)
-        if not self._call('Init'):
-            raise SteamApiStartupError(
-                'Unable to initialize. Check Steam client is running '
-                'and Steam application ID is defined in steam_appid.txt or passed to Api.')
+
+        err_msg = (
+            'Unable to initialize. Check Steam client is running '
+            'and Steam application ID is defined in steam_appid.txt or passed to Api.'
+        )
+
+        if self._lib.steam_init():
+
+            try:
+                client = self._lib.Client()
+
+                self._client = client
+
+                self.utils = Utils(client.utils)
+                """Interface to various utilities.
+    
+                .. code-block:: python
+    
+                    print(api.utils.ui_language)
+    
+                """
+
+
+            except Exception as e:
+                raise SteamApiStartupError('%s:\n%s' % (err_msg, e))
+
+        else:
+            raise SteamApiStartupError(err_msg)
 
     @classmethod
     def set_app_id(cls, app_id):
@@ -137,15 +156,17 @@ class Api(_ApiResourceBase):
 
         :rtype: bool
         """
-        return bool(self._call('IsSteamRunning'))
+        return self._lib.steam_is_running()
 
     @property
     def install_path(self):
         """Returns library installation path.
 
+        DEPRECATED. Windows only.
+
         :rtype: str
         """
-        return path.abspath(self._get_str('GetSteamInstallPath'))
+        return self._lib.get_install_path()
 
     def start_app(self):
         """
@@ -162,10 +183,7 @@ class Api(_ApiResourceBase):
                 False if your executable was started through the Steam client or a steam_appid.txt file
                 is present in your game's directory (for development). Your current process should continue.
         """
-        args = None
-        if self._app_id is not None:
-            args = (self._app_id,)
-        return bool(self._call('RestartAppIfNecessary', args))
+        return self._lib.steam_restart_if_necessary(self._app_id)
 
     def run_callbacks(self):
         # Heavy duty method. Call library function as directly as possible.
@@ -185,4 +203,4 @@ class Api(_ApiResourceBase):
 
     def shutdown(self):
         """Shutdowns API."""
-        self._call('Shutdown')
+        self._lib.steam_shutdown()

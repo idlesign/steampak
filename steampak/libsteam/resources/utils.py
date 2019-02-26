@@ -3,6 +3,10 @@ from datetime import datetime
 from .base import _ApiResourceBase, _EnumBase
 
 
+if False:  # pragma: nocover
+    from ._wrapper import Utils as IUtils
+
+
 class Universe(_EnumBase):
 
     INVALID = 0
@@ -22,7 +26,7 @@ class Universe(_EnumBase):
     }
 
 
-class NotificationPosition(object):
+class NotificationPosition:
 
     TOP_LEFT = 0
     TOP_RIGHT = 1
@@ -41,7 +45,9 @@ class Utils(_ApiResourceBase):
 
     """
 
-    _res_name = 'ISteamUtils'
+    iface = None  # type: IUtils
+
+    notification_positions = NotificationPosition
 
     @property
     def seconds_app_active(self):
@@ -49,8 +55,7 @@ class Utils(_ApiResourceBase):
 
         :rtype: int
         """
-        # todo works?
-        return self._call('GetSecondsSinceAppActive', (self._ihandle(),))
+        return self.iface.get_seconds_app_active()
 
     @property
     def seconds_computer_active(self):
@@ -58,8 +63,7 @@ class Utils(_ApiResourceBase):
 
         :rtype: int
         """
-        # todo works?
-        return self._call('GetSecondsSinceComputerActive', (self._ihandle(),))
+        return self.iface.get_seconds_computer_active()
 
     @property
     def server_time(self):
@@ -67,7 +71,7 @@ class Utils(_ApiResourceBase):
 
         :rtype: datetime
         """
-        return datetime.utcfromtimestamp(self._call('GetServerRealTime', (self._ihandle(),)))
+        return datetime.utcfromtimestamp(self.iface.get_server_time())
 
     @property
     def country_code(self):
@@ -78,7 +82,7 @@ class Utils(_ApiResourceBase):
 
         :rtype: str
         """
-        return self._get_str('GetIPCountry', (self._ihandle(),))
+        return self.iface.get_country_code()
 
     @property
     def battery_power(self):
@@ -87,7 +91,7 @@ class Utils(_ApiResourceBase):
 
         :rtype: int
         """
-        return self._call('GetCurrentBatteryPower', (self._ihandle(),))
+        return self.iface.get_battery_power()
 
     @property
     def app_id(self):
@@ -95,7 +99,7 @@ class Utils(_ApiResourceBase):
 
         :rtype: int
         """
-        return self._call('GetAppID', (self._ihandle(),))
+        return self.iface.get_app_id()
 
     def set_notification_position(self, position):
         """Sets the position where the overlay instance for the currently
@@ -106,7 +110,7 @@ class Utils(_ApiResourceBase):
 
         :param int position: Position. See ``NotificationPosition``.
         """
-        return self._call('SetOverlayNotificationPosition', (self._ihandle(), position))
+        self.iface.set_notify_position(position)
 
     @property
     def overlay_enabled(self):
@@ -117,7 +121,7 @@ class Utils(_ApiResourceBase):
 
         :rtype: bool
         """
-        return self._get_bool('IsOverlayEnabled', (self._ihandle(),))
+        return self.iface.get_overlay_enabled()
 
     @property
     def vr_mode(self):
@@ -125,7 +129,7 @@ class Utils(_ApiResourceBase):
 
         :rtype: bool
         """
-        return self._get_bool('IsSteamRunningInVR', (self._ihandle(),))
+        return self.iface.get_vr_mode()
 
     def get_universe(self, as_str=False):
         """Returns universe the client is connected to. See ``Universe``.
@@ -133,7 +137,7 @@ class Utils(_ApiResourceBase):
         :param bool as_str: Return human-friendly universe name instead of an ID.
         :rtype: int|str
         """
-        result = self._call('GetConnectedUniverse', (self._ihandle(),))
+        result = self.iface.get_connected_universe()
 
         if as_str:
             return Universe.get_alias(result)
@@ -157,7 +161,7 @@ class Utils(_ApiResourceBase):
 
         :rtype: int
         """
-        return self._call('GetIPCCallCount', (self._ihandle(),))
+        return self.iface.get_ipc_call_count()
 
     @property
     def ui_language(self):
@@ -167,4 +171,4 @@ class Utils(_ApiResourceBase):
 
         :rtype: str
         """
-        return self._get_str('GetSteamUILanguage', (self._ihandle(),))
+        return self.iface.get_ui_language()
