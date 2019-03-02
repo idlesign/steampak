@@ -62,6 +62,9 @@ class FriendTags(_ApiResourceBase):
         for idx in range(len(self)):
             yield FriendTag(get_group(idx), _contribute=contribute)
 
+    def __iter__(self):
+        return iter(self())
+
 
 class Friends(_ApiResourceBase):
     """Exposes methods to get friends related data.
@@ -117,3 +120,6 @@ class Friends(_ApiResourceBase):
         for idx in range(self.get_count(flt)):
             user_id = get_by_index(idx, flt)
             yield User(user_id, _contribute=contribute)
+
+    def __iter__(self):
+        return iter(self())

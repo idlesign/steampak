@@ -76,7 +76,7 @@ def test_friends(api):
 
     picked = None
 
-    for friend in friends():
+    for friend in friends:
         name = friend.name
         assert name
 
@@ -90,12 +90,15 @@ def test_friends(api):
     assert picked.has_friends()
     picked.show_profile()
 
-    tags = {tag.name: tag for tag in api.friends.tags()}
+    tags = {tag.name: tag for tag in api.friends.tags}
 
     assert tags
     assert 2 < len(tags['кореша']) < 10
 
-    groups = {group.name: group for group in api.groups()}
+
+def test_groups(api):
+
+    groups = {group.name: group for group in api.groups}
 
     assert groups
     group = groups['Steam Universe']

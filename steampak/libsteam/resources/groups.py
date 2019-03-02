@@ -109,3 +109,6 @@ class Groups(_ApiResourceBase):
 
         for idx in range(len(self)):
             yield Group(get_clan(idx), _contribute=contribute)
+
+    def __iter__(self):
+        return iter(self())
