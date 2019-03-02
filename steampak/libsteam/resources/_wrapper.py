@@ -2,7 +2,7 @@ import faulthandler
 from os import environ
 
 from ctyped.toolbox import Library
-from ctyped.types import CObject, CPointer, CInt32
+from ctyped.types import CObject, CPointer, CInt32, CInt16
 from ._versions import *
 
 faulthandler.enable()
@@ -82,12 +82,12 @@ with lib.s('SteamAPI_'):
         def get_nickname(self, uid: int) -> str:
             ...
 
-        @lib.m('GetFriendByIndex')
-        def get_by_index(self, idx: int, flt: int) -> int:
-            ...
-
         @lib.m('HasFriend')
         def get_has_friend(self, uid: int, flt: int) -> bool:
+            ...
+
+        @lib.m('GetFriendByIndex')
+        def get_by_index(self, idx: int, flt: int) -> int:
             ...
 
         @lib.m('GetFriendPersonaName')
@@ -98,8 +98,20 @@ with lib.s('SteamAPI_'):
         def get_state(self, uid: int) -> int:
             ...
 
-        @lib.m('ActivateGameOverlayToUser')
-        def activate_overlay(self, realm: str, uid: int) -> int:
+        @lib.m('GetFriendsGroupCount')
+        def get_group_count(self) -> int:
+            ...
+
+        @lib.m('GetFriendsGroupName')
+        def get_group_name(self, gid: int) -> str:
+            ...
+
+        @lib.m('GetFriendsGroupMembersCount')
+        def get_group_members_count(self, gid: int) -> int:
+            ...
+
+        @lib.m('GetFriendsGroupIDByIndex')
+        def get_group(self, idx: int) -> CInt16:
             ...
 
         @lib.m('GetFriendPersonaNameHistory')
@@ -109,6 +121,11 @@ with lib.s('SteamAPI_'):
         @lib.m('GetFriendSteamLevel')
         def get_level(self, uid: CInt32) -> CInt32:  # todo
             ...
+
+        @lib.m('ActivateGameOverlayToUser')
+        def activate_overlay(self, realm: str, uid: int) -> int:
+            ...
+
 
     @lib.cls(prefix='ISteamMatchmaking_')
     class Matchmaking(CObject):

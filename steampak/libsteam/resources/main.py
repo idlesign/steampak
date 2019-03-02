@@ -1,4 +1,5 @@
 from os import environ
+from functools import partial
 
 from .apps import Applications
 from .friends import Friends
@@ -7,9 +8,10 @@ from .overlay import Overlay
 from .user import CurrentUser
 from .utils import Utils
 from ..exceptions import SteamApiStartupError
+from .base import _ApiResourceBase
 
 
-class Api:
+class Api(_ApiResourceBase):
     """Main entry point of Steam API.
 
     It is aliased as ``steampak.SteamApi``.
@@ -26,7 +28,16 @@ class Api:
 
     """
 
-    current_user = CurrentUser()
+    utils: Utils = None
+    """Interface to various utilities.
+
+    .. code-block:: python
+
+        print(api.utils.ui_language)
+
+    """
+
+    current_user: CurrentUser = None
     """Interface to current user.
 
     .. code-block:: python
@@ -35,7 +46,7 @@ class Api:
 
     """
 
-    friends = Friends()
+    friends: Friends = None
     """Interface to friends of current user.
 
     .. code-block:: python
@@ -89,6 +100,8 @@ class Api:
         :param str|int app_id: Application (game) identifier.
             Pass it as a parameter or put `steam_appid.txt` file with that ID in your game folder.
         """
+        super().__init__()
+
         environ['STEAM_API_LIB'] = library_path
 
         from . import _wrapper
@@ -118,17 +131,13 @@ class Api:
             try:
                 client = self._lib.Client()
 
+                contrib = self._contribute_internals
+
                 self._client = client
 
-                self.utils = Utils(client.utils)
-                """Interface to various utilities.
-    
-                .. code-block:: python
-    
-                    print(api.utils.ui_language)
-    
-                """
-
+                self.utils = Utils(_contribute=partial(contrib, iface=client.utils))
+                self.current_user = CurrentUser(_contribute=partial(contrib, iface=client.user))
+                self.friends = Friends(_contribute=partial(contrib, iface=client.friends))
 
             except Exception as e:
                 raise SteamApiStartupError('%s:\n%s' % (err_msg, e))

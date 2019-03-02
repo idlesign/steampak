@@ -5,6 +5,7 @@ from os import path
 import pytest
 
 from steampak import SteamApi
+from steampak.libsteam.resources.user import User
 
 
 def set_log_level(lvl):
@@ -15,7 +16,7 @@ APP_SPACEWAR = 480
 APP_ID = APP_SPACEWAR
 
 LOG_LEVEL = logging.DEBUG
-set_log_level(LOG_LEVEL)
+# set_log_level(LOG_LEVEL)
 
 libs = sorted(glob('libsteam_api*'))
 
@@ -39,7 +40,7 @@ def test_basic(api):
 
 
 def test_utils(api):
-    assert api.utils.ipc_call_count == 30  # may vary probably
+    assert api.utils.ipc_call_count > 10
     assert api.utils.seconds_app_active >= 0
     assert api.utils.seconds_computer_active >= 0
     assert api.utils.server_time
@@ -53,3 +54,42 @@ def test_utils(api):
 
     api.utils.set_notification_position(api.utils.notification_positions.TOP_LEFT)
 
+
+def test_current_user(api):
+    user = api.current_user
+    assert user.steam_id
+    assert user.steam_handle
+    assert 10 < user.level < 60
+    assert user.behind_nat
+    assert user.logged_in
+
+    user_obj = user.user
+    assert user_obj.name == 'idle sign'
+    assert user_obj.state == 'online'
+
+
+def test_friends(api):
+
+    friends = api.friends
+
+    assert 10 < friends.get_count() < 20
+
+    picked = None
+
+    for friend in friends():
+        name = friend.name
+        assert name
+
+        if name == 'hiter-fuma':
+            picked = friend  # type: User
+
+    assert picked
+    # assert picked.level == 33  # todo
+    assert picked.name_history == ['hiter-fuma']
+    assert picked.state in {'online', 'away', 'offline'}
+    assert picked.has_friends()
+    picked.show_profile()
+
+    groups = {tag.name: tag for tag in api.friends.tags()}
+
+    assert 2 < len(groups['кореша']) < 10

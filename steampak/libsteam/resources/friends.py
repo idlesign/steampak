@@ -1,6 +1,9 @@
 from .base import _ApiResourceBase, FriendFilter
 from .user import User
 
+if False:  # pragma: nocover
+    from ._wrapper import Friends as IFriends
+
 
 class FriendTag(_ApiResourceBase):
     """Exposes methods to get friend tag data.
@@ -14,9 +17,10 @@ class FriendTag(_ApiResourceBase):
 
     """
 
-    _res_name = 'ISteamFriends'
+    _iface = None  # type: IFriends
 
-    def __init__(self, tag_id):
+    def __init__(self, tag_id, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.tag_id = tag_id
 
     @property
@@ -25,39 +29,38 @@ class FriendTag(_ApiResourceBase):
 
         :rtype: str
         """
-        return self._get_str('GetFriendsGroupName', (self._ihandle(), self.tag_id))
+        return self._iface.get_group_name(self.tag_id)
 
     def __len__(self):
         """Returns a number of members with friend tag.
 
         :rtype: int
-        :return:
         """
-        return self._call('GetFriendsGroupMembersCount', (self._ihandle(), self.tag_id))
+        return self._iface.get_group_members_count(self.tag_id)
 
 
 class FriendTags(_ApiResourceBase):
     """Exposes methods to get friend tags data."""
 
-    _res_name = 'ISteamFriends'
+    _iface = None  # type: IFriends
 
     def __len__(self):
         """Returns a number of current user friend tags.
 
         :rtype: int
-        :return:
         """
-        return self._call('GetFriendsGroupCount', (self._ihandle(),))
+        return self._iface.get_group_count()
 
     def __call__(self):
         """Generator. Returns FriendTag objects.
 
         :rtype: FriendTag
-        :return:
         """
+        get_group = self._iface.get_group
+        contribute = self._contribute_internals
+
         for idx in range(len(self)):
-            tag_id = self._call('GetFriendsGroupIDByIndex', (self._ihandle(), idx))
-            yield FriendTag(tag_id)
+            yield FriendTag(get_group(idx), _contribute=contribute)
 
 
 class Friends(_ApiResourceBase):
@@ -71,9 +74,10 @@ class Friends(_ApiResourceBase):
             print(user.name)
 
     """
-    _res_name = 'ISteamFriends'
 
-    tags = FriendTags()
+    _iface = None  # type: IFriends
+
+    tags: FriendTags = None
     """Interface to friend tags (categories).
 
     .. code-block:: python
@@ -83,6 +87,11 @@ class Friends(_ApiResourceBase):
 
     """
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.tags = FriendTags(_contribute=self._contribute_internals)
+
     def get_count(self, flt=FriendFilter.ALL):
         """Returns a number of current user friends, who meet a given criteria (filter).
 
@@ -91,7 +100,7 @@ class Friends(_ApiResourceBase):
 
         :rtype: int
         """
-        return self._call('GetFriendCount', (self._ihandle(), flt))
+        return self._iface.get_count(flt)
 
     def __len__(self):
         return self.get_count()
@@ -102,6 +111,9 @@ class Friends(_ApiResourceBase):
         :param int flt: Filter value from FriendFilter. Filters can be combined with |.
         :rtype: User
         """
+        get_by_index = self._iface.get_by_index
+        contribute = self._contribute_internals
+
         for idx in range(self.get_count(flt)):
-            user_id = self._get_ptr('GetFriendByIndex', (self._ihandle(), idx, flt))
-            yield User(user_id)
+            user_id = get_by_index(idx, flt)
+            yield User(user_id, _contribute=contribute)

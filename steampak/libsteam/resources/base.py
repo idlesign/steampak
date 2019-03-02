@@ -32,6 +32,9 @@ class _ApiResourceBase:
     _iface = None
     _client = None  # type: Client
 
+    def __init__(self, *, _contribute=None, **kwargs):
+        _contribute and _contribute(self)
+
     def _contribute_internals(self, to, *, iface=None, client=None):
         to._iface = iface or self._iface
         to._client = client or self._client
