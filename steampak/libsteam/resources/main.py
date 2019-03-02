@@ -56,7 +56,7 @@ class Api(_ApiResourceBase):
 
     """
 
-    groups = Groups()
+    groups: Groups = None
     """Interface to user groups.
 
     .. code-block:: python
@@ -138,6 +138,7 @@ class Api(_ApiResourceBase):
                 self.utils = Utils(_contribute=partial(contrib, iface=client.utils))
                 self.current_user = CurrentUser(_contribute=partial(contrib, iface=client.user))
                 self.friends = Friends(_contribute=partial(contrib, iface=client.friends))
+                self.groups = Groups(_contribute=partial(contrib, iface=client.friends))
 
             except Exception as e:
                 raise SteamApiStartupError('%s:\n%s' % (err_msg, e))

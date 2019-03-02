@@ -2,7 +2,7 @@ import faulthandler
 from os import environ
 
 from ctyped.toolbox import Library
-from ctyped.types import CObject, CPointer, CInt32, CInt16
+from ctyped.types import CObject, CPointer, CInt32, CInt16, CRef
 from ._versions import *
 
 faulthandler.enable()
@@ -98,6 +98,26 @@ with lib.s('SteamAPI_'):
         def get_state(self, uid: int) -> int:
             ...
 
+        @lib.m('GetClanCount')
+        def get_clan_count(self) -> int:
+            ...
+
+        @lib.m('GetClanByIndex')
+        def get_clan(self, idx: int) -> int:
+            ...
+
+        @lib.m('GetClanName')
+        def get_clan_name(self, cid: int) -> str:
+            ...
+
+        @lib.m('GetClanTag')
+        def get_clan_alias(self, cid: int) -> str:
+            ...
+
+        @lib.m('GetClanActivityCounts')
+        def get_clan_stats(self, cid: int, online: CRef, ingame: CRef, chatting: CRef) -> bool:
+            ...
+
         @lib.m('GetFriendsGroupCount')
         def get_group_count(self) -> int:
             ...
@@ -125,7 +145,6 @@ with lib.s('SteamAPI_'):
         @lib.m('ActivateGameOverlayToUser')
         def activate_overlay(self, realm: str, uid: int) -> int:
             ...
-
 
     @lib.cls(prefix='ISteamMatchmaking_')
     class Matchmaking(CObject):

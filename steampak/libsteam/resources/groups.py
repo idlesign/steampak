@@ -1,6 +1,9 @@
-import ctypes
+from ctyped.types import CRef
 
 from .base import _ApiResourceBase
+
+if False:  # pragma: nocover
+    from ._wrapper import Friends as IFriends
 
 
 class Group(_ApiResourceBase):
@@ -15,9 +18,10 @@ class Group(_ApiResourceBase):
 
     """
 
-    _res_name = 'ISteamFriends'
+    _iface = None  # type: IFriends
 
-    def __init__(self, group_id):
+    def __init__(self, group_id, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.group_id = group_id
 
     @property
@@ -32,22 +36,21 @@ class Group(_ApiResourceBase):
 
         :return: dict
         """
-        stats_online = ctypes.c_int()
-        stats_ingame = ctypes.c_int()
-        stats_chatting = ctypes.c_int()
+        stats_online = CRef.int()
+        stats_ingame = CRef.int()
+        stats_chatting = CRef.int()
 
-        self._call(
-            'GetClanActivityCounts', [
-                self._ihandle(), self.group_id,
-                ctypes.byref(stats_online),
-                ctypes.byref(stats_ingame),
-                ctypes.byref(stats_chatting),
-            ])
+        self._iface.get_clan_stats(
+            self.group_id,
+            stats_online,
+            stats_ingame,
+            stats_chatting,
+        )
 
         return {
-            'online': stats_online,
-            'ingame': stats_ingame,
-            'chatting': stats_chatting,
+            'online': int(stats_online),
+            'ingame': int(stats_ingame),
+            'chatting': int(stats_chatting),
         }
 
     @property
@@ -56,7 +59,7 @@ class Group(_ApiResourceBase):
 
         :rtype: str
         """
-        return self._get_str('GetClanName', (self._ihandle(), self.group_id))
+        return self._iface.get_clan_name(self.group_id)
 
     @property
     def alias(self):
@@ -64,15 +67,15 @@ class Group(_ApiResourceBase):
 
         :rtype: str
         """
-        return self._get_str('GetClanTag', (self._ihandle(), self.group_id))
+        return self._iface.get_clan_alias(self.group_id)
 
     def show_page(self):
         """Shows overlay with group page."""
-        self._call('ActivateGameOverlayToUser', (self._ihandle(), 'steamid', self.group_id))
+        self._iface.activate_overlay('steamid', self.group_id)
 
     def open_chat(self):
         """Shows overlay with group chat window."""
-        self._call('ActivateGameOverlayToUser', (self._ihandle(), 'chat', self.group_id))
+        self._iface.activate_overlay('chat', self.group_id)
 
 
 class Groups(_ApiResourceBase):
@@ -87,19 +90,22 @@ class Groups(_ApiResourceBase):
 
     """
 
-    _res_name = 'ISteamFriends'
+    _iface = None  # type: IFriends
 
     def __len__(self):
         """Returns a number of current user groups (clans).
 
         :rtype: int
         """
-        return self._call('GetClanCount', (self._ihandle(),))
+        return self._iface.get_clan_count()
 
     def __call__(self):
         """Generator. Returns Group objects.
 
         :rtype: Group
         """
+        contribute = self._contribute_internals
+        get_clan = self._iface.get_clan
+
         for idx in range(len(self)):
-            yield Group(self._get_ptr('GetClanByIndex', (self._ihandle(), idx)))
+            yield Group(get_clan(idx), _contribute=contribute)

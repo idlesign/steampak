@@ -90,6 +90,18 @@ def test_friends(api):
     assert picked.has_friends()
     picked.show_profile()
 
-    groups = {tag.name: tag for tag in api.friends.tags()}
+    tags = {tag.name: tag for tag in api.friends.tags()}
 
-    assert 2 < len(groups['кореша']) < 10
+    assert tags
+    assert 2 < len(tags['кореша']) < 10
+
+    groups = {group.name: group for group in api.groups()}
+
+    assert groups
+    group = groups['Steam Universe']
+    assert group.alias == 'Steam U'
+
+    stats = group.stats
+    assert stats
+    assert 900000 > stats['online'] > 100000
+
