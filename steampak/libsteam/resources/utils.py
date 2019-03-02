@@ -45,7 +45,9 @@ class Utils(_ApiResourceBase):
 
     """
 
-    _iface = None  # type: IUtils
+    def __init__(self, *args, **kwargs):
+        self._iface = self.get_client().utils
+        super().__init__(*args, **kwargs)
 
     notification_positions = NotificationPosition
 

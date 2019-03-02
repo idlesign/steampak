@@ -1,4 +1,8 @@
 from collections import namedtuple
+from threading import local
+
+from ..exceptions import SteamApiError
+
 
 if False:  # pragma: nocover
     from ._wrapper import Client
@@ -6,6 +10,13 @@ if False:  # pragma: nocover
 # Function argument which will contain additional function result.
 # Expects ctypes type as a parameter.
 ResultArg = namedtuple('ResultArg', ['ctype'])
+
+
+_API_THREAD_LOCAL = local()
+
+
+def _set_client(client):
+    setattr(_API_THREAD_LOCAL, 'steam_client', client)
 
 
 class _EnumBase:
@@ -29,15 +40,21 @@ class _ApiResourceBase:
 
     """
 
-    _iface = None
-    _client = None  # type: Client
+    def __init__(self, *args, **kwargs):
+        pass
 
-    def __init__(self, *, _contribute=None, **kwargs):
-        _contribute and _contribute(self)
+    @classmethod
+    def get_client(cls):
+        """
 
-    def _contribute_internals(self, to, *, iface=None, client=None):
-        to._iface = iface or self._iface
-        to._client = client or self._client
+        :rtype: Client
+        """
+        client = getattr(_API_THREAD_LOCAL, 'steam_client', None)
+
+        if client is None:
+            raise SteamApiError('You need to initialize Api.')
+
+        return client
 
 
 class FriendFilter:

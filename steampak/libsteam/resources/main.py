@@ -1,14 +1,13 @@
 from os import environ
-from functools import partial
 
 from .apps import Applications
+from .base import _ApiResourceBase, _set_client
 from .friends import Friends
 from .groups import Groups
 from .overlay import Overlay
 from .user import CurrentUser
 from .utils import Utils
 from ..exceptions import SteamApiStartupError
-from .base import _ApiResourceBase
 
 
 class Api(_ApiResourceBase):
@@ -66,7 +65,7 @@ class Api(_ApiResourceBase):
 
     """
 
-    apps = Applications()
+    apps: Applications = None
     """Interface to applications (games).
 
     .. code-block:: python
@@ -129,16 +128,12 @@ class Api(_ApiResourceBase):
         if self._lib.steam_init():
 
             try:
-                client = self._lib.Client()
+                _set_client(self._lib.Client())
 
-                contrib = self._contribute_internals
-
-                self._client = client
-
-                self.utils = Utils(_contribute=partial(contrib, iface=client.utils))
-                self.current_user = CurrentUser(_contribute=partial(contrib, iface=client.user))
-                self.friends = Friends(_contribute=partial(contrib, iface=client.friends))
-                self.groups = Groups(_contribute=partial(contrib, iface=client.friends))
+                self.utils = Utils()
+                self.current_user = CurrentUser()
+                self.friends = Friends()
+                self.groups = Groups()
 
             except Exception as e:
                 raise SteamApiStartupError('%s:\n%s' % (err_msg, e))

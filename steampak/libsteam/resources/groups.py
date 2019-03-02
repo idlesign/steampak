@@ -2,9 +2,6 @@ from ctyped.types import CRef
 
 from .base import _ApiResourceBase
 
-if False:  # pragma: nocover
-    from ._wrapper import Friends as IFriends
-
 
 class Group(_ApiResourceBase):
     """Exposes methods to get user groups (clans) data.
@@ -18,9 +15,8 @@ class Group(_ApiResourceBase):
 
     """
 
-    _iface = None  # type: IFriends
-
     def __init__(self, group_id, *args, **kwargs):
+        self._iface = self.get_client().friends
         super().__init__(*args, **kwargs)
         self.group_id = group_id
 
@@ -90,7 +86,9 @@ class Groups(_ApiResourceBase):
 
     """
 
-    _iface = None  # type: IFriends
+    def __init__(self, *args, **kwargs):
+        self._iface = self.get_client().friends
+        super().__init__(*args, **kwargs)
 
     def __len__(self):
         """Returns a number of current user groups (clans).
@@ -104,11 +102,10 @@ class Groups(_ApiResourceBase):
 
         :rtype: Group
         """
-        contribute = self._contribute_internals
         get_clan = self._iface.get_clan
 
         for idx in range(len(self)):
-            yield Group(get_clan(idx), _contribute=contribute)
+            yield Group(get_clan(idx))
 
     def __iter__(self):
         return iter(self())

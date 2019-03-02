@@ -1,8 +1,5 @@
 from .base import FriendFilter, _ApiResourceBase, _EnumBase
 
-if False:  # pragma: nocover
-    from ._wrapper import User as IUser, Friends as IFriends
-
 
 class UserState(_EnumBase):
     """User states enumeration."""
@@ -40,9 +37,11 @@ class User(_ApiResourceBase):
 
     """
 
-    _iface = None  # type: IFriends
-
     def __init__(self, user_id, *args, **kwargs):
+        client = self.get_client()
+        self._iface = client.friends
+        self._iface_user = client.user
+
         super().__init__(*args, **kwargs)
         self.user_id = user_id
 
@@ -54,7 +53,7 @@ class User(_ApiResourceBase):
         """
         uid = self.user_id
 
-        if self._client.user.get_id() == uid:
+        if self._iface_user.get_id() == uid:
             return self._iface.get_my_name()
 
         return self._iface.get_name(uid)
@@ -99,7 +98,7 @@ class User(_ApiResourceBase):
 
         uid = self.user_id
 
-        if self._client.user.get_id() == uid:
+        if self._iface_user.get_id() == uid:
             result = self._iface.get_my_state()
 
         else:
@@ -185,14 +184,14 @@ class CurrentUser(_ApiResourceBase):
 
     """
 
-    _iface = None  # type: IUser
+    def __init__(self, *args, **kwargs):
+        self._iface = self.get_client().user
+        super().__init__(*args, **kwargs)
 
     @property
     def user(self):
         # User object for current user.
-        user = User(self.steam_id)
-        self._contribute_internals(user, iface=self._client.friends)
-        return user
+        return User(self.steam_id)
 
     @property
     def logged_in(self):
@@ -237,4 +236,4 @@ class CurrentUser(_ApiResourceBase):
         # Returns the HSteamUser this interface represents.
         # This is only used internally by the API, and by a few select interfaces
         # that support multi-user.
-        return self._client.h_user
+        return self.get_client().h_user

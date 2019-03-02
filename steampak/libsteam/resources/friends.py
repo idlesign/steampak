@@ -1,9 +1,6 @@
 from .base import _ApiResourceBase, FriendFilter
 from .user import User
 
-if False:  # pragma: nocover
-    from ._wrapper import Friends as IFriends
-
 
 class FriendTag(_ApiResourceBase):
     """Exposes methods to get friend tag data.
@@ -17,9 +14,8 @@ class FriendTag(_ApiResourceBase):
 
     """
 
-    _iface = None  # type: IFriends
-
     def __init__(self, tag_id, *args, **kwargs):
+        self._iface = self.get_client().friends
         super().__init__(*args, **kwargs)
         self.tag_id = tag_id
 
@@ -42,7 +38,9 @@ class FriendTag(_ApiResourceBase):
 class FriendTags(_ApiResourceBase):
     """Exposes methods to get friend tags data."""
 
-    _iface = None  # type: IFriends
+    def __init__(self, *args, **kwargs):
+        self._iface = self.get_client().friends
+        super().__init__(*args, **kwargs)
 
     def __len__(self):
         """Returns a number of current user friend tags.
@@ -57,10 +55,9 @@ class FriendTags(_ApiResourceBase):
         :rtype: FriendTag
         """
         get_group = self._iface.get_group
-        contribute = self._contribute_internals
 
         for idx in range(len(self)):
-            yield FriendTag(get_group(idx), _contribute=contribute)
+            yield FriendTag(get_group(idx))
 
     def __iter__(self):
         return iter(self())
@@ -78,8 +75,6 @@ class Friends(_ApiResourceBase):
 
     """
 
-    _iface = None  # type: IFriends
-
     tags: FriendTags = None
     """Interface to friend tags (categories).
 
@@ -91,9 +86,10 @@ class Friends(_ApiResourceBase):
     """
 
     def __init__(self, *args, **kwargs):
+        self._iface = self.get_client().friends
         super().__init__(*args, **kwargs)
 
-        self.tags = FriendTags(_contribute=self._contribute_internals)
+        self.tags = FriendTags()
 
     def get_count(self, flt=FriendFilter.ALL):
         """Returns a number of current user friends, who meet a given criteria (filter).
@@ -115,11 +111,10 @@ class Friends(_ApiResourceBase):
         :rtype: User
         """
         get_by_index = self._iface.get_by_index
-        contribute = self._contribute_internals
 
         for idx in range(self.get_count(flt)):
             user_id = get_by_index(idx, flt)
-            yield User(user_id, _contribute=contribute)
+            yield User(user_id)
 
     def __iter__(self):
         return iter(self())
