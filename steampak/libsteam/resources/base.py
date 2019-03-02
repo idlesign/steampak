@@ -1,18 +1,14 @@
-import logging
 from collections import namedtuple
-from threading import local
 
-
-LIBRARY_PATH = None
-API_THREAD_LOCAL = local()
-LOGGER = logging.getLogger('steampak.libsteam')
+if False:  # pragma: nocover
+    from ._wrapper import Client
 
 # Function argument which will contain additional function result.
 # Expects ctypes type as a parameter.
 ResultArg = namedtuple('ResultArg', ['ctype'])
 
 
-class _EnumBase(object):
+class _EnumBase:
     """Enumeration base class."""
 
     aliases = {}
@@ -33,11 +29,15 @@ class _ApiResourceBase:
 
     """
 
-    def __init__(self, iface=None):  # todo remove none
-        self.iface = iface
+    _iface = None
+    _client = None  # type: Client
+
+    def _contribute_internals(self, to, *, iface=None, client=None):
+        to._iface = iface or self._iface
+        to._client = client or self._client
 
 
-class FriendFilter(object):
+class FriendFilter:
     """Filters to be provided to functions returning friends.
     Can be combined using `|`.
 
@@ -55,4 +55,5 @@ class FriendFilter(object):
     IGNORED = 0x200
     IGNORED_FRIEND = 0x400
     SUGGESTED = 0x800
+    CHAT_MEMBER = 0x1000
     ALL = 0xFFFF
