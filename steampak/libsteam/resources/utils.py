@@ -22,7 +22,7 @@ class Universe(_EnumBase):
         BETA: 'beta',
         INTERNAL: 'internal',
         DEV: 'dev',
-        MAX: 'max',
+        MAX: 'unsupported',
     }
 
 
@@ -45,7 +45,7 @@ class Utils(_ApiResourceBase):
 
     """
 
-    iface = None  # type: IUtils
+    _iface = None  # type: IUtils
 
     notification_positions = NotificationPosition
 
@@ -55,7 +55,7 @@ class Utils(_ApiResourceBase):
 
         :rtype: int
         """
-        return self.iface.get_seconds_app_active()
+        return self._iface.get_seconds_app_active()
 
     @property
     def seconds_computer_active(self):
@@ -63,7 +63,7 @@ class Utils(_ApiResourceBase):
 
         :rtype: int
         """
-        return self.iface.get_seconds_computer_active()
+        return self._iface.get_seconds_computer_active()
 
     @property
     def server_time(self):
@@ -71,7 +71,7 @@ class Utils(_ApiResourceBase):
 
         :rtype: datetime
         """
-        return datetime.utcfromtimestamp(self.iface.get_server_time())
+        return datetime.utcfromtimestamp(self._iface.get_server_time())
 
     @property
     def country_code(self):
@@ -82,7 +82,7 @@ class Utils(_ApiResourceBase):
 
         :rtype: str
         """
-        return self.iface.get_country_code()
+        return self._iface.get_country_code()
 
     @property
     def battery_power(self):
@@ -91,7 +91,7 @@ class Utils(_ApiResourceBase):
 
         :rtype: int
         """
-        return self.iface.get_battery_power()
+        return self._iface.get_battery_power()
 
     @property
     def app_id(self):
@@ -99,7 +99,7 @@ class Utils(_ApiResourceBase):
 
         :rtype: int
         """
-        return self.iface.get_app_id()
+        return self._iface.get_app_id()
 
     def set_notification_position(self, position):
         """Sets the position where the overlay instance for the currently
@@ -110,7 +110,7 @@ class Utils(_ApiResourceBase):
 
         :param int position: Position. See ``NotificationPosition``.
         """
-        self.iface.set_notify_position(position)
+        self._iface.set_notify_position(position)
 
     @property
     def overlay_enabled(self):
@@ -121,7 +121,7 @@ class Utils(_ApiResourceBase):
 
         :rtype: bool
         """
-        return self.iface.get_overlay_enabled()
+        return self._iface.get_overlay_enabled()
 
     @property
     def vr_mode(self):
@@ -129,7 +129,7 @@ class Utils(_ApiResourceBase):
 
         :rtype: bool
         """
-        return self.iface.get_vr_mode()
+        return self._iface.get_vr_mode()
 
     def get_universe(self, as_str=False):
         """Returns universe the client is connected to. See ``Universe``.
@@ -137,7 +137,7 @@ class Utils(_ApiResourceBase):
         :param bool as_str: Return human-friendly universe name instead of an ID.
         :rtype: int|str
         """
-        result = self.iface.get_connected_universe()
+        result = self._iface.get_connected_universe()
 
         if as_str:
             return Universe.get_alias(result)
@@ -161,7 +161,7 @@ class Utils(_ApiResourceBase):
 
         :rtype: int
         """
-        return self.iface.get_ipc_call_count()
+        return self._iface.get_ipc_call_count()
 
     @property
     def ui_language(self):
@@ -171,4 +171,4 @@ class Utils(_ApiResourceBase):
 
         :rtype: str
         """
-        return self.iface.get_ui_language()
+        return self._iface.get_ui_language()
