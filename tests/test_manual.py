@@ -191,3 +191,10 @@ def test_ach(set_app_id):
     assert ach_streamer.clear()
 
     assert achs.store_stats()
+
+
+def test_overlay(api):
+    overlay = api.overlay
+
+    overlay.activate('https://pythonz.net')
+    # overlay.activate(overlay.OVERLAY_PAGE_ACHIEVEMENTS)

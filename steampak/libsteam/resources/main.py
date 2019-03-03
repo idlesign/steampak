@@ -75,7 +75,7 @@ class Api(_ApiResourceBase):
 
     """
 
-    overlay = Overlay()
+    overlay: Overlay = None
     """Interface to Steam overlay.
 
     Overlay-related functions only work with OpenGL/D3D applications and only
@@ -135,6 +135,7 @@ class Api(_ApiResourceBase):
                 self.friends = Friends()
                 self.groups = Groups()
                 self.apps = Applications()
+                self.overlay = Overlay()
 
             except Exception as e:
                 raise SteamApiStartupError('%s:\n%s' % (err_msg, e))

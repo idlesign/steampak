@@ -23,7 +23,10 @@ class Overlay(_ApiResourceBase):
         api.overlay.activate()
 
     """
-    _res_name = 'ISteamFriends'
+
+    def __init__(self, *args, **kwargs):
+        self._iface = self.get_client().friends
+        super().__init__(*args, **kwargs)
 
     def activate(self, page=None):
         """Activates overlay with browser, optionally opened at a given page.
@@ -35,6 +38,7 @@ class Overlay(_ApiResourceBase):
         page = page or ''
 
         if '://' in page:
-            self._call('ActivateGameOverlayToWebPage', (self._ihandle(), page))
+            self._iface.activate_overlay_url(page)
+
         else:
-            self._call('ActivateGameOverlay', (self._ihandle(), page))
+            self._iface.activate_overlay_game(page)

@@ -139,11 +139,19 @@ with lib.s('SteamAPI_'):
             ...
 
         @lib.m('GetFriendSteamLevel')
-        def get_level(self, uid: CInt32) -> CInt32:  # todo
+        def get_level(self, uid: int) -> int:
             ...
 
         @lib.m('ActivateGameOverlayToUser')
         def activate_overlay(self, realm: str, uid: int) -> int:
+            ...
+
+        @lib.m('ActivateGameOverlayToWebPage')
+        def activate_overlay_url(self, url: str) -> None:
+            ...
+
+        @lib.m('ActivateGameOverlay')
+        def activate_overlay_game(self, page: str) -> None:
             ...
 
     @lib.cls(prefix='ISteamMatchmaking_')
