@@ -1,15 +1,6 @@
 from .base import _ApiResourceBase
 
 
-OVERLAY_PAGE_FRIENDS = 'Friends'
-OVERLAY_PAGE_COMMUNITY = 'Community'
-OVERLAY_PAGE_PLAYERS = 'Players'
-OVERLAY_PAGE_SETTINGS = 'Settings'
-OVERLAY_PAGE_GAME_GROUP = 'OfficialGameGroup'
-OVERLAY_PAGE_STATS = 'Stats'
-OVERLAY_PAGE_ACHIEVEMENTS = 'Achievements'
-
-
 class Overlay(_ApiResourceBase):
     """Exposes methods to manipulate overlay.
 
@@ -23,6 +14,14 @@ class Overlay(_ApiResourceBase):
         api.overlay.activate()
 
     """
+
+    PAGE_FRIENDS = 'Friends'
+    PAGE_COMMUNITY = 'Community'
+    PAGE_PLAYERS = 'Players'
+    PAGE_SETTINGS = 'Settings'
+    PAGE_GAME_GROUP = 'OfficialGameGroup'
+    PAGE_STATS = 'Stats'
+    PAGE_ACHIEVEMENTS = 'Achievements'
 
     def __init__(self, *args, **kwargs):
         self._iface = self.get_client().friends

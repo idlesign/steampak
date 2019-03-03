@@ -197,4 +197,4 @@ def test_overlay(api):
     overlay = api.overlay
 
     overlay.activate('https://pythonz.net')
-    # overlay.activate(overlay.OVERLAY_PAGE_ACHIEVEMENTS)
+    overlay.activate(overlay.PAGE_ACHIEVEMENTS)

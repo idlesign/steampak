@@ -2,6 +2,11 @@ steampak changelog
 ==================
 
 
+Unreleased
+----------
+! IMPORTANT: Overlay page constants moved into overlay class.
+
+
 v0.5.0
 ------
 + CLI: `get_cards_stats` command now accepts `skip-owned` option.
