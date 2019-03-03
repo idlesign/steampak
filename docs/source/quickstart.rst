@@ -11,6 +11,10 @@ Steam API example
 * Second. Your need to know application (game) identifier provided by Steam.
   Pass it as a parameter or put ``steam_appid.txt`` file with that ID in your game folder.
 
+.. note::
+
+    Sample OpenGL app using ``steampak`` is available here: https://github.com/idlesign/steampak/tree/master/demo
+
 
 Now you're ready to begin. API initialization is easy:
 

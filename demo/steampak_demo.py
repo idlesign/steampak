@@ -1,6 +1,10 @@
 #! /usr/bin/env python3
 """
-Demo application requires PyOpenGL (python3-opengl) and in some cases PyOpenGL-accelerate packages to be installed.
+
+Before you start:
+
+* Demo application requires PyOpenGL (python3-opengl) and in some cases PyOpenGL-accelerate packages to be installed.
+* Make sure `steampak` is available to your Python 3.
 
 1. Set PATH_LIBSTEAM environment variable to a proper path or put `libsteam_api.so` into `demo` directory
    near this very file.
