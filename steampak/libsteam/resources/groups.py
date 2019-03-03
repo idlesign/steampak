@@ -32,9 +32,9 @@ class Group(_ApiResourceBase):
 
         :return: dict
         """
-        stats_online = CRef.int()
-        stats_ingame = CRef.int()
-        stats_chatting = CRef.int()
+        stats_online = CRef.cint()
+        stats_ingame = CRef.cint()
+        stats_chatting = CRef.cint()
 
         self._iface.get_clan_stats(
             self.group_id,
