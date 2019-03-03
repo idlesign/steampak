@@ -2,8 +2,8 @@ steampak changelog
 ==================
 
 
-Unreleased
-----------
+v0.6.0
+------
 ! IMPORTANT: Callback scheduling methods removed as not currently used.
 ! IMPORTANT: Dropped support for Python < 3.6. Performance improved.
 ! IMPORTANT: Overlay page constants moved into overlay class.
