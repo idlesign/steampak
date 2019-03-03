@@ -194,19 +194,7 @@ class Api(_ApiResourceBase):
 
     def run_callbacks(self):
         # Heavy duty method. Call library function as directly as possible.
-        get_library().SteamAPI_RunCallbacks()
-
-    def register_callback(self, callback, i_callback):
-        self._call('RegisterCallback', (callback, i_callback))
-
-    def unregister_callback(self, callback):
-        self._call('RegisterCallback', (callback,))
-
-    def register_call_result(self, callback, result):
-        self._call('RegisterCallResult', (callback, result))
-
-    def unregister_call_result(self, callback, result):
-        self._call('UnregisterCallResult', (callback, result))
+        self._lib.steam_run_callbacks()
 
     def shutdown(self):
         """Shutdowns API."""

@@ -24,6 +24,10 @@ with lib.s('SteamAPI_'):
     def steam_shutdown():
         ...
 
+    @lib.f('RunCallbacks')
+    def steam_run_callbacks():
+        ...
+
     @lib.f('IsSteamRunning')
     def steam_is_running() -> bool:
         ...

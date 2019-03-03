@@ -4,6 +4,7 @@ steampak changelog
 
 Unreleased
 ----------
+! IMPORTANT: Callback scheduling methods removed as not currently used.
 ! IMPORTANT: Overlay page constants moved into overlay class.
 
 
