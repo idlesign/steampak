@@ -1,6 +1,7 @@
 from collections import namedtuple
 from threading import local
 
+from ctyped.types import CRef
 from ..exceptions import SteamApiError
 
 
@@ -42,6 +43,17 @@ class _ApiResourceBase:
 
     def __init__(self, *args, **kwargs):
         pass
+
+    def _get_str(self, func, args, max_len=300):
+
+        value = CRef.carray(str, size=max_len)
+        args.extend([value, max_len])
+        result = func(*args)
+
+        if (isinstance(result, bool) and not result) or result == -1:
+            return ''
+
+        return str(value)
 
     @classmethod
     def get_client(cls):
