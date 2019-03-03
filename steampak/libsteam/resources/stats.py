@@ -1,7 +1,7 @@
-import ctypes
 from datetime import datetime
 
-from .base import _ApiResourceBase, ResultArg
+from ctyped.types import CRef
+from .base import _ApiResourceBase
 
 
 class Achievement(_ApiResourceBase):
@@ -16,23 +16,25 @@ class Achievement(_ApiResourceBase):
         print(SteamAchievement('some_achievement_name').title)
 
 
-    Instances can be accessed through ``api.apps.current.achievements()``:
+    Instances can be accessed through ``api.apps.current.achievements``:
 
     .. code-block:: python
 
-        for ach_name, ach in api.apps.current.achievements():
+        for ach_name, ach in api.apps.current.achievements:
             print('%s (%s)' % (ach.title, ach_name))
 
     """
 
-    _res_name = 'ISteamUserStats'
+    def __init__(self, name, *args, **kwargs):
+        self._iface = self.get_client().user_stats
+        super().__init__(*args, **kwargs)
+        self.name = name
 
-    def __init__(self, name):
-        self._name = name
-        self.name = self._str_decode(name)
+    def __str__(self):
+        return self.name
 
     def _get_attr(self, attr_name):
-        return self._get_str('GetAchievementDisplayAttribute', (self._ihandle(), self._name, attr_name))
+        return self._iface.get_ach_attrib(self.name, attr_name)
 
     @property
     def title(self):
@@ -56,9 +58,13 @@ class Achievement(_ApiResourceBase):
 
         :rtype: float
         """
-        result, percent = self._call(
-            'GetAchievementAchievedPercent', [self._ihandle(), self._name, ResultArg(ctypes.c_float)])
-        return percent
+        percent = CRef.cfloat()
+        result = self._iface.get_ach_progress(self.name, percent)
+
+        if not result:
+            return 0.0
+
+        return float(percent)
 
     @property
     def hidden(self):
@@ -74,9 +80,13 @@ class Achievement(_ApiResourceBase):
 
         :rtype: bool
         """
-        result, unlocked = self._call(
-            'GetAchievement', [self._ihandle(), self._name, ResultArg(ctypes.c_bool)])
-        return unlocked
+        achieved = CRef.cbool()
+        result = self._iface.get_ach(self.name, achieved)
+
+        if not result:
+            return False
+
+        return bool(achieved)
 
     def unlock(self, store=True):
         """Unlocks the achievement.
@@ -86,7 +96,7 @@ class Achievement(_ApiResourceBase):
         :rtype: bool
 
         """
-        result = self._get_bool('SetAchievement', (self._ihandle(), self._name))
+        result = self._iface.ach_unlock(self.name)
         result and store and self._store()
         return result
 
@@ -95,7 +105,7 @@ class Achievement(_ApiResourceBase):
 
         :rtype: bool
         """
-        result = self._get_bool('ClearAchievement', (self._ihandle(), self._name))
+        result = self._iface.ach_lock(self.name)
         result and store and self._store()
         return result
 
@@ -108,7 +118,7 @@ class Achievement(_ApiResourceBase):
 
         :rtype: bool
         """
-        return self._call('StoreStats', (self._ihandle(),))
+        return self._iface.store_stats()
 
     def get_unlock_info(self):
         """Returns tuple of unlock data: (is_unlocked, unlocked_datetime).
@@ -119,15 +129,25 @@ class Achievement(_ApiResourceBase):
 
         :rtype: tuple[bool, datetime]
         """
-        result, unlocked, unlocked_at = self._call(
-            'GetAchievementAndUnlockTime',
-            [self._ihandle(), self._name, ResultArg(ctypes.c_bool), ResultArg(ctypes.c_int)])
+        unlocked = CRef.cbool()
+        unlocked_at = CRef.cint()
+
+        result = self._iface.get_ach_unlock_info(self.name, unlocked, unlocked_at)
+
+        if not result:
+            return None, None
+
+        unlocked = bool(unlocked)
+        unlocked_at = int(unlocked_at)
 
         if unlocked:
+
             if unlocked_at:
                 unlocked_at = datetime.utcfromtimestamp(unlocked_at)
+
             else:
                 unlocked_at = None
+
         else:
             unlocked_at = None
 
@@ -137,7 +157,9 @@ class Achievement(_ApiResourceBase):
 class CurrentApplicationAchievements(_ApiResourceBase):
     """Exposes methods to get to achievements."""
 
-    _res_name = 'ISteamUserStats'
+    def __init__(self, *args, **kwargs):
+        self._iface = self.get_client().user_stats
+        super().__init__(*args, **kwargs)
 
     def store_stats(self):
         """Stores the current data on the server.
@@ -146,22 +168,23 @@ class CurrentApplicationAchievements(_ApiResourceBase):
 
         :rtype: bool
         """
-        return self._call('StoreStats', (self._ihandle(),))
+        return self._iface.store_stats()
 
     def __len__(self):
         """Returns a number of current game achievements..
 
         :rtype: int
-        :return:
         """
-        return self._call('GetNumAchievements', (self._ihandle(),))
+        return self._iface.get_ach_count()
 
     def __call__(self):
         """Generator. Returns (name, Achievement) tuples.
 
         :rtype: tuple(str, Achievement)
-        :return:
         """
         for idx in range(len(self)):
-            name = self._get_str('GetAchievementName', (self._ihandle(), idx), decode=False)
-            yield self._str_decode(name), Achievement(name)
+            name = self._iface.get_ach_name(idx)
+            yield name, Achievement(name)
+
+    def __iter__(self):
+        return iter(self())

@@ -1,16 +1,10 @@
-from collections import namedtuple
 from threading import local
 
 from ctyped.types import CRef
 from ..exceptions import SteamApiError
 
-
 if False:  # pragma: nocover
     from ._wrapper import Client
-
-# Function argument which will contain additional function result.
-# Expects ctypes type as a parameter.
-ResultArg = namedtuple('ResultArg', ['ctype'])
 
 
 _API_THREAD_LOCAL = local()

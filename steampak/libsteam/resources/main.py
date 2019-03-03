@@ -50,7 +50,7 @@ class Api(_ApiResourceBase):
 
     .. code-block:: python
 
-        for user in api.friends():
+        for user in api.friends:
             print(user.name)
 
     """
@@ -60,7 +60,7 @@ class Api(_ApiResourceBase):
 
     .. code-block:: python
 
-        for group in api.groups():
+        for group in api.groups:
             print(group.name)
 
     """
@@ -70,7 +70,7 @@ class Api(_ApiResourceBase):
 
     .. code-block:: python
 
-        for app_id, app in api.apps.installed():
+        for app_id, app in api.apps.installed:
             print('%s: %s' % (app_id, app.name))
 
     """
@@ -134,6 +134,7 @@ class Api(_ApiResourceBase):
                 self.current_user = CurrentUser()
                 self.friends = Friends()
                 self.groups = Groups()
+                self.apps = Applications()
 
             except Exception as e:
                 raise SteamApiStartupError('%s:\n%s' % (err_msg, e))

@@ -1,13 +1,9 @@
-import ctypes
 from datetime import datetime
 
-from .base import _ApiResourceBase, ResultArg
-from .user import User
+from ctyped.types import CRef
+from .base import _ApiResourceBase
 from .stats import CurrentApplicationAchievements
-
-
-MAX_TITLE_LEN = 300
-MAX_DIRECTORY_LEN = 500
+from .user import User
 
 
 class Application(_ApiResourceBase):
@@ -24,14 +20,22 @@ class Application(_ApiResourceBase):
 
     """
 
-    _res_name = 'ISteamApps'
-
-    def __init__(self, app_id):
+    def __init__(self, app_id, *args, **kwargs):
         """
         :param int|None app_id: Application (game) ID.
         """
+        client = self.get_client()
+
+        self._iface = client.apps
+        self._iface_list = client.app_list
+
+        super().__init__(*args, **kwargs)
+
         if app_id is not None:  # Might be None for current app.
             self.app_id = app_id
+
+    def __str__(self):
+        return self.name
 
     @property
     def owned(self):
@@ -43,7 +47,7 @@ class Application(_ApiResourceBase):
 
         :rtype: bool
         """
-        return self._get_bool('BIsSubscribedApp', (self._ihandle(), self.app_id))
+        return self._iface.get_is_subscribed(self.app_id)
 
     @property
     def installed(self):
@@ -51,7 +55,7 @@ class Application(_ApiResourceBase):
 
         :rtype: bool
         """
-        return self._get_bool('BIsAppInstalled', (self._ihandle(), self.app_id))
+        return self._iface.get_is_installed(self.app_id)
 
     @property
     def name(self):
@@ -63,15 +67,7 @@ class Application(_ApiResourceBase):
 
         :rtype: str
         """
-        max_len = MAX_TITLE_LEN
-        result, name = self._call(
-            'SteamAPI_ISteamAppList_GetAppName',
-            [self._ihandle('SteamAppList'), self.app_id, ResultArg(ctypes.c_char * max_len), max_len], direct=True)
-
-        if result == -1:
-            return None
-
-        return self._str_decode(name)
+        return self._get_str(self._iface_list.get_name, [self.app_id])
 
     @property
     def install_dir(self):
@@ -83,20 +79,15 @@ class Application(_ApiResourceBase):
 
         :rtype: str
         """
-        max_len = MAX_DIRECTORY_LEN
-        res_arg = ResultArg(ctypes.c_char * max_len)
-        _, directory = self._call('GetAppInstallDir', [self._ihandle(), self.app_id, res_arg, max_len])
+        max_len = 500
+
+        directory = self._get_str(self._iface.get_install_dir, [self.app_id], max_len=max_len)
 
         if not directory:
             # Fallback to restricted interface (can only be used by approved apps).
-            result, directory = self._call(
-                'SteamAPI_ISteamAppList_GetAppInstallDir',
-                [self._ihandle('SteamAppList'), self.app_id, res_arg, max_len], direct=True)
+            directory = self._get_str(self._iface_list.get_install_dir, [self.app_id], max_len=max_len)
 
-            if result == -1:
-                return None
-
-        return self._str_decode(directory)
+        return directory
 
     @property
     def purchase_time(self):
@@ -104,10 +95,7 @@ class Application(_ApiResourceBase):
 
         :rtype: datetime
         """
-        # todo works?
-        ts = self._call('GetEarliestPurchaseUnixTime', (self._ihandle(),))
-        if not ts:
-            return None
+        ts = self._iface.get_purchase_time(self.app_id)
         return datetime.utcfromtimestamp(ts)
 
     @property
@@ -121,8 +109,7 @@ class Application(_ApiResourceBase):
 
         :rtype: int
         """
-        return self._call(
-            'SteamAPI_ISteamAppList_GetAppBuildId', (self._ihandle('SteamAppList'), self.app_id), direct=True)
+        return self._iface_list.get_build_id(self.app_id)
 
 
 class InstalledApplications(_ApiResourceBase):
@@ -135,15 +122,17 @@ class InstalledApplications(_ApiResourceBase):
         Restricted interface can only be used by approved apps.
 
     """
-    _res_name = 'ISteamAppList'
+
+    def __init__(self, *args, **kwargs):
+        self._iface = self.get_client().app_list
+        super().__init__(*args, **kwargs)
 
     def __len__(self):
         """Returns a number of currently installed applications.
 
         :rtype: int
-        :return:
         """
-        return self._call('GetNumInstalledApps', (self._ihandle(),))
+        return self._iface.get_installed_count()
 
     def __call__(self):
         """Generator. Returns Application objects, representing currently installed applications.
@@ -152,11 +141,16 @@ class InstalledApplications(_ApiResourceBase):
         :return:
         """
         max_count = len(self)
-        _, apps_id = self._call(
-            'GetInstalledApps', [self._ihandle(), ResultArg(ctypes.c_uint32 * max_count), max_count])
 
-        for app_id in apps_id:
+        apps_ids = CRef.carray(int, size=max_count)
+
+        total = self._iface.get_installed(apps_ids, max_count)
+
+        for app_id in apps_ids:
             yield app_id, Application(app_id)
+
+    def __iter__(self):
+        return iter(self())
 
 
 class Dlc(Application):
@@ -177,6 +171,7 @@ class Dlc(Application):
     """
 
     def __init__(self, app_id):
+        self._iface = self.get_client().apps
         super(Dlc, self).__init__(app_id)
         self._name = None
         self._available = None
@@ -187,15 +182,15 @@ class Dlc(Application):
 
         :rtype: bool
         """
-        return self._get_bool('BIsDlcInstalled', (self._ihandle(), self.app_id))
+        return self._iface.get_is_dlc_installed(self.app_id)
 
     def install(self):
         """Installs DLC (for optional DLCs)."""
-        self._call('InstallDLC', (self._ihandle(), self.app_id))
+        self._iface.dlc_install(self.app_id)
 
     def uninstall(self):
         """Uninstalls DLC (for optional DLCs)."""
-        self._call('UninstallDLC', (self._ihandle(), self.app_id))
+        self._iface.dlc_uninstall(self.app_id)
 
     def get_download_progress(self):
         """Returns tuple with download progress (for optional DLCs):
@@ -204,11 +199,15 @@ class Dlc(Application):
 
         :rtype: tuple
         """
-        _, current, total = self._call(
-            'GetDlcDownloadProgress',
-            [self._ihandle(), self.app_id, ResultArg(ctypes.c_uint64), ResultArg(ctypes.c_uint64)])
+        downloaded = CRef.cint()
+        total = CRef.cint()
 
-        return current, total
+        result = self._iface.get_dlc_download_progress(self.app_id, downloaded, total)
+
+        if not result:
+            return 0, 0
+
+        return int(downloaded), int(total)
 
     @property
     def name(self):
@@ -217,7 +216,7 @@ class Dlc(Application):
         :rtype: str
         """
         # Fallback to parent data if necessary.
-        return self._name or super(Dlc, self).name
+        return self._name or super().name
 
     @property
     def available(self):
@@ -233,7 +232,10 @@ class CurrentApplicationDlcs(_ApiResourceBase):
     for current application.
 
     """
-    _res_name = 'ISteamApps'
+
+    def __init__(self, *args, **kwargs):
+        self._iface = self.get_client().apps
+        super().__init__(*args, **kwargs)
 
     def __len__(self):
         """Returns a number of current application .
@@ -241,7 +243,7 @@ class CurrentApplicationDlcs(_ApiResourceBase):
         :rtype: int
         :return:
         """
-        return self._call('GetDLCCount', (self._ihandle(),))
+        return self._iface.get_dlc_count()
 
     def __call__(self):
         """Generator. Returns Dlc objects.
@@ -249,19 +251,28 @@ class CurrentApplicationDlcs(_ApiResourceBase):
         :rtype: tuple(int, Dlc)
         :return:
         """
-        max_len = MAX_TITLE_LEN
+        max_len = 300
+
         for idx in range(len(self)):
-            result, app_id, available, name = self._call(
-                'BGetDLCDataByIndex', [
-                    self._ihandle(), idx,
-                    ResultArg(ctypes.c_int), ResultArg(ctypes.c_bool), ResultArg(ctypes.c_char * max_len), max_len])
+
+            app_id = CRef.cint()
+            available = CRef.cbool()
+            name = CRef.carray(str, size=max_len)
+
+            if not self._iface.get_dlc_by_index(idx, app_id, available, name, max_len):
+                continue
+
+            app_id = int(app_id)
 
             dlc = Dlc(app_id)
             # Populate data.
-            dlc._name = name
-            dlc._available = available
+            dlc._name = str(name)
+            dlc._available = bool(available)
 
             yield app_id, dlc
+
+    def __iter__(self):
+        return iter(self())
 
 
 class CurrentApplication(Application):
@@ -279,7 +290,7 @@ class CurrentApplication(Application):
 
     """
 
-    dlcs = CurrentApplicationDlcs()
+    dlcs: CurrentApplicationDlcs = None
     """Interface to DLCs of current application.
 
     .. code-block:: python
@@ -289,7 +300,7 @@ class CurrentApplication(Application):
 
     """
 
-    achievements = CurrentApplicationAchievements()
+    achievements: CurrentApplicationAchievements = None
     """Current application (game) achievements.
 
     .. code-block:: python
@@ -299,14 +310,18 @@ class CurrentApplication(Application):
 
     """
 
+    def __init__(self, *args, **kwargs):
+        self._iface = self.get_client().apps
+        self._iface_utils = self.get_client().utils
+        super().__init__(None, *args, **kwargs)
 
-    def __init__(self):
-        super(CurrentApplication, self).__init__(None)
+        self.dlcs = CurrentApplicationDlcs()
+        self.achievements = CurrentApplicationAchievements()
 
     @property
     def app_id(self):
         # Overrode to support parent class methods.
-        return self._call('SteamAPI_ISteamUtils_GetAppID', (self._ihandle('SteamUtils'),), direct=True)
+        return self._iface_utils.get_app_id()
 
     @property
     def beta_name(self):
@@ -314,10 +329,7 @@ class CurrentApplication(Application):
 
         :rtype: str
         """
-        # todo works?
-        max_len = MAX_TITLE_LEN
-        _, name = self._call('GetCurrentBetaName', [self._ihandle(), ResultArg(ctypes.c_char * max_len), max_len])
-        return self._str_decode(name)
+        return self._get_str(self._iface.get_name_beta, [])
 
     @property
     def build_id(self):
@@ -330,7 +342,7 @@ class CurrentApplication(Application):
 
         :rtype: int
         """
-        return self._call('GetAppBuildId', (self._ihandle(),))
+        return self._iface.get_current_build_id()
 
     @property
     def language_current(self):
@@ -340,7 +352,7 @@ class CurrentApplication(Application):
 
         :rtype: str
         """
-        return self._get_str('GetCurrentGameLanguage', (self._ihandle(),))
+        return self._iface.get_current_language()
 
     @property
     def language_available(self):
@@ -350,7 +362,7 @@ class CurrentApplication(Application):
 
         :rtype: list[str]
         """
-        return self._get_str('GetAvailableGameLanguages', (self._ihandle(),)).split(',')
+        return self._iface.get_available_languages().split(',')
 
     @property
     def vac_banned(self):
@@ -358,7 +370,7 @@ class CurrentApplication(Application):
 
         :rtype: bool
         """
-        return self._get_bool('BIsCybercafe', (self._ihandle(),))
+        return self._iface.get_is_vac_banned()
 
     @property
     def mode_cybercafe(self):
@@ -366,7 +378,7 @@ class CurrentApplication(Application):
 
         :rtype: bool
         """
-        return self._get_bool('BIsCybercafe', (self._ihandle(),))
+        return self._iface.get_is_cybercafe()
 
     @property
     def mode_free_weekend(self):
@@ -380,7 +392,7 @@ class CurrentApplication(Application):
 
         :rtype: bool
         """
-        return self._get_bool('BIsCybercafe', (self._ihandle(),))
+        return self._iface.get_is_free_weekend()
 
     @property
     def low_violence(self):
@@ -388,7 +400,7 @@ class CurrentApplication(Application):
 
         :rtype: bool
         """
-        return self._get_bool('BIsLowViolence', (self._ihandle(),))
+        return self._iface.get_is_low_violence()
 
     @property
     def owned(self):
@@ -396,7 +408,7 @@ class CurrentApplication(Application):
 
         :rtype: bool
         """
-        return self._get_bool('BIsSubscribed', (self._ihandle(),))
+        return self._iface.get_is_owned()
 
     @property
     def owner(self):
@@ -404,8 +416,7 @@ class CurrentApplication(Application):
 
         :rtype: User
         """
-        owner_id = self._get_ptr('GetAppOwner', (self._ihandle(),))
-        return User(owner_id)
+        return User(self._iface.get_owner())
 
     def mark_corrupt(self, only_files_missing=False):
         """Signal Steam that game files seems corrupt or missing.
@@ -413,25 +424,23 @@ class CurrentApplication(Application):
         :param bool only_files_missing: Set it to True if only files are missing.
         :rtype: bool
         """
-        return self._get_bool('MarkContentCorrupt', (self._ihandle(), only_files_missing))
+        return self._iface.mark_corrupt(only_files_missing)
 
 
 class Applications(_ApiResourceBase):
     """Exposes methods to get applications data."""
 
-    _res_name = 'ISteamApps'
-
-    installed = InstalledApplications()
+    installed: InstalledApplications = None
     """Interface to installed applications.
 
     .. code-block:: python
 
-        for app_id, app in api.apps.installed():
+        for app_id, app in api.apps.installed:
             print('%s: %s' % (app_id, app.name))
 
     """
 
-    current = CurrentApplication()
+    current: CurrentApplication = None
     """Interface to current application.
 
     .. code-block:: python
@@ -439,3 +448,10 @@ class Applications(_ApiResourceBase):
         print(api.apps.current.language_current)
 
     """
+
+    def __init__(self, *args, **kwargs):
+        self._iface = self.get_client().apps
+        super().__init__(*args, **kwargs)
+
+        self.installed = InstalledApplications()
+        self.current = CurrentApplication()

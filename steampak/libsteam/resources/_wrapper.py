@@ -154,13 +154,133 @@ with lib.s('SteamAPI_'):
     class MatchmakingServers(CObject):
         """"""
 
-    @lib.cls(prefix='ISteamUserStats_')
+    @lib.cls(prefix='ISteamUserStats_', int_sign=False)
     class UserStats(CObject):
-        """"""
 
-    @lib.cls(prefix='ISteamApps_')
+        @lib.m('GetNumAchievements')
+        def get_ach_count(self) -> int:
+            ...
+
+        @lib.m('GetAchievementName')
+        def get_ach_name(self, idx: int) -> str:
+            ...
+
+        @lib.m('GetAchievementDisplayAttribute')
+        def get_ach_attrib(self, aname: str, attr: str) -> str:
+            ...
+
+        @lib.m('GetAchievement')
+        def get_ach(self, aname: str, achieved: CRef) -> bool:
+            ...
+
+        @lib.m('GetAchievementAchievedPercent')
+        def get_ach_progress(self, aname: str, percent: CRef) -> bool:
+            ...
+
+        @lib.m('GetAchievementAndUnlockTime')
+        def get_ach_unlock_info(self, aname: str, achieved: CRef, achieved_at: CRef) -> bool:
+            ...
+
+        @lib.m('StoreStats')
+        def store_stats(self) -> bool:
+            ...
+
+        @lib.m('SetAchievement')
+        def ach_unlock(self, aname: str) -> bool:
+            ...
+
+        @lib.m('ClearAchievement')
+        def ach_lock(self, aname: str) -> bool:
+            ...
+
+
+    @lib.cls(prefix='ISteamApps_', int_sign=False)
     class Apps(CObject):
-        """"""
+
+        @lib.m('GetAppInstallDir', int_sign=True)
+        def get_install_dir(self, aid: int, result: CRef, max_len: int) -> int:
+            ...
+
+        @lib.m('BIsSubscribedApp')
+        def get_is_subscribed(self, aid: int) -> bool:
+            ...
+
+        @lib.m('BIsAppInstalled')
+        def get_is_installed(self, aid: int) -> bool:
+            ...
+
+        @lib.m('BIsDlcInstalled')
+        def get_is_dlc_installed(self, aid: int) -> bool:
+            ...
+
+        @lib.m('InstallDLC')
+        def dlc_install(self, aid: int):
+            ...
+
+        @lib.m('UninstallDLC')
+        def dlc_uninstall(self, aid: int):
+            ...
+
+        @lib.m('GetDlcDownloadProgress')
+        def get_dlc_download_progress(self, aid: int, downloaded: CRef, total: CRef) -> bool:
+            ...
+
+        @lib.m('GetEarliestPurchaseUnixTime')
+        def get_purchase_time(self, aid: int) -> int:
+            ...
+
+        @lib.m('GetAppBuildId')
+        def get_current_build_id(self) -> int:
+            ...
+
+        @lib.m('GetCurrentGameLanguage')
+        def get_current_language(self) -> str:
+            ...
+
+        @lib.m('GetAvailableGameLanguages')
+        def get_available_languages(self) -> str:
+            ...
+
+        @lib.m('BIsVACBanned')
+        def get_is_vac_banned(self) -> bool:
+            ...
+
+        @lib.m('BIsCybercafe')
+        def get_is_cybercafe(self) -> bool:
+            ...
+
+        @lib.m('BIsSubscribedFromFreeWeekend')
+        def get_is_free_weekend(self) -> bool:
+            ...
+
+        @lib.m('BIsLowViolence')
+        def get_is_low_violence(self) -> bool:
+            ...
+
+        @lib.m('BIsSubscribed')
+        def get_is_owned(self) -> bool:
+            ...
+
+        @lib.m('GetAppOwner', int_bits=64)
+        def get_owner(self) -> int:
+            ...
+
+        @lib.m('MarkContentCorrupt')
+        def mark_corrupt(self, files_missing: bool) -> bool:
+            ...
+
+        @lib.m('GetCurrentBetaName', int_sign=True)
+        def get_name_beta(self, result: CRef, max_len: int) -> bool:
+            ...
+
+        @lib.m('GetDLCCount')
+        def get_dlc_count(self) -> int:
+            ...
+
+        @lib.m('BGetDLCDataByIndex')
+        def get_dlc_by_index(self, idx: int, aid: CRef, available: CRef, name: CRef, max_len: int) -> bool:
+            ...
+
 
     @lib.cls(prefix='ISteamNetworking_')
     class Networking(CObject):
@@ -186,9 +306,28 @@ with lib.s('SteamAPI_'):
     class Ugc(CObject):
         """"""
 
-    @lib.cls(prefix='ISteamAppList_')
+    @lib.cls(prefix='ISteamAppList_', int_bits=32, int_sign=False)
     class AppList(CObject):
-        """"""
+
+        @lib.m('GetNumInstalledApps')
+        def get_installed_count(self) -> int:
+            ...
+
+        @lib.m('GetInstalledApps')
+        def get_installed(self, result: CRef, max_count: int) -> int:
+            ...
+
+        @lib.m('GetAppName', int_sign=True)
+        def get_name(self, aid: int, result: CRef, max_len: int) -> int:
+            ...
+
+        @lib.m('GetAppInstallDir', int_sign=True)
+        def get_install_dir(self, aid: int, result: CRef, max_len: int) -> int:
+            ...
+
+        @lib.m('GetAppBuildId')
+        def get_build_id(self, aid: int) -> int:
+            ...
 
     @lib.cls(prefix='ISteamMusic_')
     class Music(CObject):
