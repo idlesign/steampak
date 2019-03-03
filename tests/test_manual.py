@@ -1,13 +1,13 @@
 import logging
 from glob import glob
-from os import path, environ
+from os import path
 
 import pytest
 
 from steampak import SteamApi
 from steampak.libsteam.resources.apps import Application
-from steampak.libsteam.resources.user import User
 from steampak.libsteam.resources.stats import Achievement
+from steampak.libsteam.resources.user import User
 
 
 def set_log_level(lvl):
@@ -88,17 +88,11 @@ def test_friends(api):
 
     assert 10 < friends.get_count() < 20
 
-    picked = None
-
-    for friend in friends:
-        name = friend.name
-        assert name
-
-        if name == 'hiter-fuma':
-            picked = friend  # type: User
+    friends = {friend.name:  friend for friend in friends}
+    picked = friends['hiter-fuma']
 
     assert picked
-    # assert picked.level == 33  # todo
+    assert picked.level == 33  # todo
     assert picked.name_history == ['hiter-fuma']
     assert picked.state in {'online', 'away', 'offline'}
     assert picked.has_friends()
