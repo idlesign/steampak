@@ -2,7 +2,7 @@ import faulthandler
 from os import environ
 
 from ctyped.toolbox import Library
-from ctyped.types import CObject, CPointer, CInt32, CInt16, CRef
+from ctyped.types import CObject, CPointer, CInt16, CRef
 from ._versions import *
 
 faulthandler.enable()
