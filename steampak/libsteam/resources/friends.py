@@ -19,6 +19,9 @@ class FriendTag(_ApiResourceBase):
         super().__init__(*args, **kwargs)
         self.tag_id = tag_id
 
+    def __str__(self):
+        return self.name
+
     @property
     def name(self):
         """Name of a friend tag, or None on error.

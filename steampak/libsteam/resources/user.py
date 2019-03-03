@@ -45,6 +45,9 @@ class User(_ApiResourceBase):
         super().__init__(*args, **kwargs)
         self.user_id = user_id
 
+    def __str__(self):
+        return '%s [%s]' % (self.user_id, self.name)
+
     @property
     def name(self):
         """User name (the same name as on the users community profile page).
@@ -187,6 +190,9 @@ class CurrentUser(_ApiResourceBase):
     def __init__(self, *args, **kwargs):
         self._iface = self.get_client().user
         super().__init__(*args, **kwargs)
+
+    def __str__(self):
+        return str(self.steam_id)
 
     @property
     def user(self):
