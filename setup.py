@@ -27,7 +27,7 @@ setup(
     zip_safe=False,
 
     install_requires=[
-        'ctyped',
+        'ctyped>=0.5.0',
     ],
     extras_require={
         'webapi': ['requests', 'bs4'],
