@@ -7,6 +7,7 @@ Unreleased
 ! IMPORTANT: Callback scheduling methods removed as not currently used.
 ! IMPORTANT: Dropped support for Python < 3.6. Performance improved.
 ! IMPORTANT: Overlay page constants moved into overlay class.
++ Adapted to 'libsteam_api' version 1.42.
 
 
 v0.5.0
