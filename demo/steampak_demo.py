@@ -1,77 +1,80 @@
-#! /usr/bin/env python
+#! /usr/bin/env python3
 """
-Demo application requires `PyOpenGL` and `PyOpenGL-accelerate` packages to be installed.
+Demo application requires PyOpenGL (python3-opengl) and in some cases PyOpenGL-accelerate packages to be installed.
 
-1. Change LIBRARY_PATH (see below) to a proper path or put `libsteam_api.so` into `demo` directory
+1. Set PATH_LIBSTEAM environment variable to a proper path or put `libsteam_api.so` into `demo` directory
    near this very file.
 
-2. Change `Exec` param in `steampak_demo.desktop` file to a proper path.
+2. Add `steampak_demo.py` into your game library:
+   Steam -> Library -> + ADD A GAME -> Add a Non-Steam Game ... -> BROWSE, ADD SELECTED PROGRAMS
 
-3. Add `steampak_demo.desktop` into your game library:
-   Steam -> Library -> Add a game... -> Add a non-Steam game ...
-
-4. Launch demo from Steam.
-
+3. Launch demo from Steam Library.
 
 Controls:
-q - quit
-o - show overlay
-p - show overlay with browser launched
+    * q - quit
+    * o - show overlay
+    * p - show overlay with browser launched
 
 """
-import sys
+from os import environ, path
 
-import OpenGL.GLUT as glut
+from OpenGL.GL import *
+from OpenGL.GLUT import *
 
 from steampak import SteamApi
-from steampak.libsteam.resources.apps import Application
+
+PATH_CURRENT = path.join(path.abspath(path.dirname(__file__)), 'libsteam_api.so')
 
 
-LIBRARY_PATH = '/home/shared/idle/code/i/steampak/libsteam_api.so'
+class SteampakDemo:
 
+    def __init__(self, fullscreen=False):
 
-class SteampakDemo(object):
-
-    def __init__(self, app_id, fullscreen=False):
-        glut.glutInit()
-        glut.glutInitDisplayMode(glut.GLUT_DOUBLE | glut.GLUT_RGBA)
+        glutInit()
+        glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_ALPHA | GLUT_DEPTH)
 
         if fullscreen:
-            glut.glutGameModeString('1920x1080:32@60')
-            glut.glutEnterGameMode()
+            glutGameModeString('1920x1080:32@60')
+            glutEnterGameMode()
+
         else:
-            glut.glutInitWindowPosition(100, 100)
-            glut.glutInitWindowSize(1024, 768)
-            glut.glutCreateWindow('steampak demo')
+            glutInitWindowPosition(100, 100)
+            glutInitWindowSize(1024, 768)
+            glutCreateWindow('steampak demo')
 
-        glut.glutDisplayFunc(self.redraw)
-        glut.glutIdleFunc(self.redraw)
-        glut.glutKeyboardFunc(self.keypress)
+        glutDisplayFunc(self.redraw)
+        glutIdleFunc(self.redraw)
+        glutKeyboardFunc(self.keypress)
 
-        self.api = SteamApi(LIBRARY_PATH, app_id=app_id)
+        self.api = SteamApi(
+            environ.get('PATH_LIBSTEAM', PATH_CURRENT),
+            app_id=environ.get('STEAM_APPID', 480),
+        )
 
     def redraw(self):
-        glut.glutSwapBuffers()
         self.api.run_callbacks()
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
+        glutSwapBuffers()
 
     def keypress(self, key, x, y):
 
-        if key == 'q':
+        # print('Key pressed: %s' % key)
+
+        if key == b'q':
             self.api.shutdown()
             sys.exit()
 
-        elif key == 'o':
+        elif key == b'o':
             self.api.overlay.activate()
 
-        elif key == 'p':
+        elif key == b'p':
             self.api.overlay.activate('https://github.com/idlesign/steampak/')
 
     def run(self):
-        glut.glutMainLoop()
+        glutMainLoop()
 
 
 if __name__ == '__main__':
 
-    APP_ID = 480
-    demo = SteampakDemo(APP_ID)
+    demo = SteampakDemo()
     demo.run()
