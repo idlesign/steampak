@@ -58,4 +58,5 @@ Table of Contents
     libsteam_stats
     libsteam_user
     libsteam_utils
+    libsteam_overlay
 
