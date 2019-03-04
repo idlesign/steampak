@@ -59,4 +59,5 @@ Table of Contents
     libsteam_user
     libsteam_utils
     libsteam_overlay
+    libsteam_screenshots
 

@@ -2,6 +2,11 @@ steampak changelog
 ==================
 
 
+Unreleased
+----------
++ Steam API. Added some screenshots related stuff.
+
+
 v0.6.0
 ------
 ! IMPORTANT: Callback scheduling methods removed as not currently used.

@@ -198,3 +198,11 @@ def test_overlay(api):
 
     overlay.activate('https://pythonz.net')
     overlay.activate(overlay.PAGE_ACHIEVEMENTS)
+
+
+def test_screenshots(api):
+    screenshots = api.screenshots
+
+    assert not screenshots.is_hooked
+    screenshots.toggle_hook()
+    screenshots.take()

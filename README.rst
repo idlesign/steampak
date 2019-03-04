@@ -99,6 +99,7 @@ Steam API bindings roadmap
     * Users
     * Utilities
     * Achievements
+    * Screenshots
 
 * **Not [yet]**
 
@@ -109,7 +110,6 @@ Steam API bindings roadmap
     * Matchmaking
     * Music
     * Networking
-    * Screenshots
     * Servers
     * Storage
     * UGC

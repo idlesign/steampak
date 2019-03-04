@@ -50,10 +50,11 @@ class SteampakDemo:
         glutIdleFunc(self.redraw)
         glutKeyboardFunc(self.keypress)
 
-        self.api = SteamApi(
+        api = SteamApi(
             environ.get('PATH_LIBSTEAM', PATH_CURRENT),
             app_id=environ.get('STEAM_APPID', 480),
         )
+        self.api = api
 
     def redraw(self):
         self.api.run_callbacks()
@@ -62,7 +63,7 @@ class SteampakDemo:
 
     def keypress(self, key, x, y):
 
-        # print('Key pressed: %s' % key)
+        print('Key pressed: %s' % key)
 
         if key == b'q':
             self.api.shutdown()
@@ -70,6 +71,9 @@ class SteampakDemo:
 
         elif key == b'o':
             self.api.overlay.activate()
+
+        elif key == b's':
+            self.api.screenshots.take()
 
         elif key == b'p':
             self.api.overlay.activate('https://github.com/idlesign/steampak/')

@@ -304,7 +304,18 @@ with lib.s('SteamAPI_'):
 
     @lib.cls(prefix='ISteamScreenshots_')
     class Screenshots(CObject):
-        """"""
+
+        @lib.m('TriggerScreenshot')
+        def take(self) -> None:
+            ...
+
+        @lib.m('HookScreenshots')
+        def toggle_hook(self, flag: bool) -> None:
+            ...
+
+        @lib.m('IsScreenshotsHooked')
+        def get_is_hooked(self) -> bool:
+            ...
 
     @lib.cls(prefix='ISteamHTTP_')
     class Http(CObject):

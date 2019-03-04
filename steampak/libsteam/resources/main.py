@@ -5,6 +5,7 @@ from .base import _ApiResourceBase, _set_client
 from .friends import Friends
 from .groups import Groups
 from .overlay import Overlay
+from .screenshots import Screenshots
 from .user import CurrentUser
 from .utils import Utils
 from ..exceptions import SteamApiStartupError
@@ -87,6 +88,15 @@ class Api(_ApiResourceBase):
 
     """
 
+    screenshots: Screenshots = None
+    """Interface to Steam screenshots.
+
+    .. code-block:: python
+
+        api.screenshots.take()
+
+    """
+
     _app_id = None
 
     def __init__(self, library_path, app_id=None):
@@ -136,6 +146,7 @@ class Api(_ApiResourceBase):
                 self.groups = Groups()
                 self.apps = Applications()
                 self.overlay = Overlay()
+                self.screenshots = Screenshots()
 
             except Exception as e:
                 raise SteamApiStartupError('%s:\n%s' % (err_msg, e))
