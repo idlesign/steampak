@@ -70,7 +70,7 @@ class SteampakDemo(arcade.Window):
 
         log_add('key: %s' % key)
 
-        if key == 113:
+        if key == 113:  # q
             log_add('closing')
             self.close()
 
@@ -78,16 +78,16 @@ class SteampakDemo(arcade.Window):
 
             try:
 
-                if key == 111:
+                if key == 111:  # o
                     log_add('overlay activate')
                     self.steam.overlay.activate()
 
-                elif key == 115:
+                elif key == 115:  # s
                     log_add('take screenshot')
                     self.steam.screenshots.take()
 
                 elif key == 112:
-                    log_add('overlay link')
+                    log_add('overlay link')  # p
                     self.steam.overlay.activate('https://github.com/idlesign/steampak/')
 
             except Exception as e:
