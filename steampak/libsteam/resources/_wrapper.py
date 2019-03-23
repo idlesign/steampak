@@ -439,8 +439,9 @@ with lib.s('SteamAPI_'):
     class Client(CObject):
 
         def __init__(self, *args, **kwargs):
+            super().__init__()
 
-            self._ct_val = get_client(VERSION_CLIENT)
+            self.value = get_client(VERSION_CLIENT)
 
             h_user = get_h_user()
             self.h_user = h_user

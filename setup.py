@@ -27,7 +27,7 @@ setup(
     zip_safe=False,
 
     install_requires=[
-        'ctyped>=0.5.0',
+        'ctyped>=0.7.0',
     ],
     extras_require={
         'webapi': ['requests', 'bs4'],
@@ -48,4 +48,3 @@ setup(
         'License :: OSI Approved :: BSD License'
     ],
 )
-
