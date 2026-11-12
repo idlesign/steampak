@@ -144,7 +144,7 @@ class InstalledApplications(_ApiResourceBase):
 
         apps_ids = CRef.carray(int, size=max_count)
 
-        total = self._iface.get_installed(apps_ids, max_count)
+        self._iface.get_installed(apps_ids, max_count)
 
         for app_id in apps_ids:
             yield app_id, Application(app_id)
@@ -172,7 +172,7 @@ class Dlc(Application):
 
     def __init__(self, app_id):
         self._iface = self.get_client().apps
-        super(Dlc, self).__init__(app_id)
+        super().__init__(app_id)
         self._name = None
         self._available = None
 

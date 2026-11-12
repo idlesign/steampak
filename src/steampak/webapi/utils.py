@@ -1,6 +1,6 @@
 import logging
 from time import sleep
-from xml.etree import ElementTree
+from xml.etree import ElementTree as ET
 from string import Template
 
 import requests
@@ -9,8 +9,6 @@ from bs4 import BeautifulSoup
 
 LOGGER = logging.getLogger(__name__)
 
-# logging.basicConfig(level=logging.DEBUG)
-# logging.getLogger('requests').setLevel(logging.ERROR)
 
 
 def str_sub(string, **kwargs):
@@ -18,7 +16,7 @@ def str_sub(string, **kwargs):
     return tpl.safe_substitute(**kwargs)
 
 
-class DataFetcher(object):
+class DataFetcher:
 
     def __init__(self, url, params=None):
         self.url = url
@@ -49,7 +47,7 @@ class DataFetcher(object):
 
     def fetch_xml(self):
         data = self.fetch_data()
-        xml = ElementTree.fromstring(data.text.encode('utf8'))
+        xml = ET.fromstring(data.text.encode('utf8'))
         return xml
 
     @classmethod

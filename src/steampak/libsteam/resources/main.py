@@ -149,7 +149,7 @@ class Api(_ApiResourceBase):
                 self.screenshots = Screenshots()
 
             except Exception as e:
-                raise SteamApiStartupError('%s:\n%s' % (err_msg, e))
+                raise SteamApiStartupError('%s:\n%s' % (err_msg, e)) from e
 
         else:
             raise SteamApiStartupError(err_msg)

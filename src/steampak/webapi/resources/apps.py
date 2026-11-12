@@ -37,7 +37,7 @@ def get_filter_cardborder(*cardborder_type):
     return '&'.join(filter_)
 
 
-class Application(object):
+class Application:
 
     def __init__(self, appid):
         self.appid = appid

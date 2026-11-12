@@ -1,85 +1,64 @@
-steampak changelog
-==================
+# steampak changelog
 
+### v0.7.0
+* ++ Steam API. Added some screenshots related stuff.
+* ** Adopted to a newer ctyped.
 
-v0.7.0
-------
-+ Steam API. Added some screenshots related stuff.
-* Adopted to a newer ctyped.
+### v0.6.0
+* !! IMPORTANT: Callback scheduling methods removed as not currently used.
+* !! IMPORTANT: Dropped support for Python < 3.6. Performance improved.
+* !! IMPORTANT: Overlay page constants moved into overlay class.
+* ++ Adapted to 'libsteam_api' version 1.42.
 
+### v0.5.0
+* ++ CLI: `get_cards_stats` command now accepts `skip-owned` option.
+* ++ CLI: `get_cards_stats` command now accepts `foil` option.
+* ++ CLI: `get_cards_stats` command now accepts `appid` options.
+* ++ CLI: launcher script is now Windows compatible.
+* ++ Web API: DataFetcher now handles `Too Many Requests` responses.
+* ++ Web API: `Application.get_cards()` now accepts cardboarder filters.
+* ++ `pip install steampak[extra]` now installs extra dependencies (for CLI, Web API)
 
-v0.6.0
-------
-! IMPORTANT: Callback scheduling methods removed as not currently used.
-! IMPORTANT: Dropped support for Python < 3.6. Performance improved.
-! IMPORTANT: Overlay page constants moved into overlay class.
-+ Adapted to 'libsteam_api' version 1.42.
+### v0.4.2
+* ** CLI: Fixed get_booster_stats() crash.
+* ** Web API: Fixed encoding problems (e.g. as seen in apps titles).
 
+### v0.4.1
+* ** Adds features advertised but missing from 0.4.0
 
-v0.5.0
-------
-+ CLI: `get_cards_stats` command now accepts `skip-owned` option.
-+ CLI: `get_cards_stats` command now accepts `foil` option.
-+ CLI: `get_cards_stats` command now accepts `appid` options.
-+ CLI: launcher script is now Windows compatible.
-+ Web API: DataFetcher now handles `Too Many Requests` responses.
-+ Web API: `Application.get_cards()` now accepts cardboarder filters.
-+ `pip install steampak[extra]` now installs extra dependencies (for CLI, Web API)
+### v0.4.0
+* ++ Added mysterious [and sales] cards handling.
+* ++ Some Web API changes adopted.
 
+### v0.3.1
+* ++ Added User.traverse_inventory() method.
+* ++ Implemented `get_cards_stats` CLI command.
+* ** Fixed market item price parsing (`decimal.InvalidOperation` error).
 
-v0.4.2
-------
-* CLI: Fixed get_booster_stats() crash.
-* Web API: Fixed encoding problems (e.g. as seen in apps titles).
+### v0.3.0
+* ++ Basic Steam Web API tools: User, Application, Market item, Card.
+* ++ Added command line interface.
+* ++ CLI: Get app cards
+* ++ CLI: Get app card prices
+* ++ CLI: Get market item price
+* ++ CLI: Get user owned games
+* ++ CLI: Get user gems count (requires public inventory)
+* ++ CLI: Get price stats for booster packs owned by user (requires public inventory)
 
+### v0.2.0
+* ++ Added simple demo app for debugging purposes.
+* ++ Open overlay.
+* ++ Open user profile.
+* ++ Open user chat window.
+* ++ Open user stats window.
+* ++ Open user achievements window.
+* ++ Open user add as a friend dialog.
+* ++ Open user remove from friends dialog.
+* ++ Open user accept friend invitation dialog.
+* ++ Open user ignore friend invitation dialog.
+* ++ Open group page.
+* ++ Open/join group chat.
+* ++ Save user stats (through achievements interface).
 
-v0.4.1
-------
-* Adds features advertised but missing from 0.4.0
-
-
-v0.4.0
-------
-+ Added mysterious [and sales] cards handling.
-+ Some Web API changes adopted.
-
-
-v0.3.1
-------
-+ Added User.traverse_inventory() method.
-+ Implemented `get_cards_stats` CLI command.
-* Fixed market item price parsing (`decimal.InvalidOperation` error).
-
-
-v0.3.0
-------
-+ Basic Steam Web API tools: User, Application, Market item, Card.
-+ Added command line interface.
-+ CLI: Get app cards
-+ CLI: Get app card prices
-+ CLI: Get market item price
-+ CLI: Get user owned games
-+ CLI: Get user gems count (requires public inventory)
-+ CLI: Get price stats for booster packs owned by user (requires public inventory)
-
-
-v0.2.0
-------
-+ Added simple demo app for debugging purposes.
-+ Open overlay.
-+ Open user profile.
-+ Open user chat window.
-+ Open user stats window.
-+ Open user achievements window.
-+ Open user add as a friend dialog.
-+ Open user remove from friends dialog.
-+ Open user accept friend invitation dialog.
-+ Open user ignore friend invitation dialog.
-+ Open group page.
-+ Open/join group chat.
-+ Save user stats (through achievements interface).
-
-
-v0.1.0
-------
-+ Basic functionality.
+### v0.1.0
+* ++ Basic functionality.

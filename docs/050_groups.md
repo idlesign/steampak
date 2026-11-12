@@ -1,12 +1,10 @@
-Groups
-======
+# Groups
 
-.. autoclass:: steampak.libsteam.resources.groups.Groups
-    :inherited-members:
+::: apidescribed: steampak.libsteam.resources.groups
+    only: [Groups]
 
 
-Group
------
+## Group
 
-.. autoclass:: steampak.libsteam.resources.groups.Group
-    :inherited-members:
+::: apidescribed: steampak.libsteam.resources.groups
+    only: [Group]

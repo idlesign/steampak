@@ -1,5 +1,4 @@
-Overlay
-=======
+# Overlay
 
-.. autoclass:: steampak.libsteam.resources.overlay.Overlay
-    :inherited-members:
+::: apidescribed: steampak.libsteam.resources.overlay
+    only: [Overlay]

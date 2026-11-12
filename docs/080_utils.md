@@ -1,22 +1,17 @@
-Utils
-=====
+# Utils
 
-.. autoclass:: steampak.libsteam.resources.utils.Utils
-    :inherited-members:
-
-
-Universe
---------
-
-.. autoclass:: steampak.libsteam.resources.utils.Universe
-    :inherited-members:
-    :undoc-members:
+::: apidescribed: steampak.libsteam.resources.utils
+    only: [Utils]
 
 
-Notification Position
----------------------
+## Universe
 
-.. autoclass:: steampak.libsteam.resources.utils.NotificationPosition
-    :inherited-members:
-    :undoc-members:
+::: apidescribed: steampak.libsteam.resources.utils
+    only: [Universe]
+
+
+## Notification Position
+
+::: apidescribed: steampak.libsteam.resources.utils
+    only: [NotificationPosition]
 

@@ -1,22 +1,14 @@
-steampak
-========
-https://github.com/idlesign/steampak
+# steampak
 
-.. image:: https://img.shields.io/pypi/v/steampak.svg
-    :target: https://pypi.python.org/pypi/steampak
+<https://github.com/idlesign/steampak>
 
-.. image:: https://img.shields.io/pypi/dm/steampak.svg
-    :target: https://pypi.python.org/pypi/steampak
-
-.. image:: https://img.shields.io/pypi/l/steampak.svg
-    :target: https://pypi.python.org/pypi/steampak
-
+[![release](https://img.shields.io/pypi/v/steampak.svg)](https://pypi.python.org/pypi/steampak)
+[![lic](https://img.shields.io/pypi/l/steampak.svg)](https://pypi.python.org/pypi/steampak)
+[![coverage](https://img.shields.io/coveralls/idlesign/steampak/master.svg)](https://coveralls.io/r/idlesign/steampak)
 
 **This software is not affiliated with Valve, Steam, or any of their partners.**
 
-
-Description
------------
+## Description
 
 *Nicely packed tools to work with Steam APIs*
 
@@ -32,59 +24,52 @@ Description
 
   To reach and analyse publicly available applications and market information.
 
-
-Steam API bindings example
---------------------------
+## Steam API bindings example
 
 A short example of API provided by Steam library, just to give a taste of it:
 
-.. code-block:: python
+```python
+from steampak import SteamApi
 
-    from steampak import SteamApi
+# A path to steam library file. This library should be provided with your game.
+# Library for various OS is distributed with Steam SDK available for Steam partners
+# at https://partner.steamgames.com/
+LIBRARY_PATH = '/home/me/my_steam_game/libsteam_api.so'
 
-    # A path to steam library file. This library should be provided with your game.
-    # Library for various OS is distributed with Steam SDK available for Steam partners
-    # at https://partner.steamgames.com/
-    LIBRARY_PATH = '/home/me/my_steam_game/libsteam_api.so'
+# Your application (game) identifier provided by Steam.
+# Pass it as a parameter or put `steam_appid.txt` file with that ID in your game folder.
+APP_ID = 480  # We use `Spacewar` ID. (This game is provided with SDK).
 
-    # Your application (game) identifier provided by Steam.
-    # Pass it as a parameter or put `steam_appid.txt` file with that ID in your game folder.
-    APP_ID = 480  # We use `Spacewar` ID. (This game is provided with SDK).
+api = SteamApi(LIBRARY_PATH, app_id=APP_ID)
 
-    api = SteamApi(LIBRARY_PATH, app_id=APP_ID)
+# Let's print some friend names:
+for user in api.friends():
+    print(user.name)
 
-    # Let's print some friend names:
-    for user in api.friends():
-        print(user.name)
+# Current app achievements progress:
+for ach_name, ach in api.apps.current.achievements():
+    print('%s (%s): %s' % (ach.title, ach_name, ach.get_unlock_info()))
 
-    # Current app achievements progress:
-    for ach_name, ach in api.apps.current.achievements():
-        print('%s (%s): %s' % (ach.title, ach_name, ach.get_unlock_info()))
+# Do not forget to shutdown when done:
+api.shutdown()
+```
 
-    # Do not forget to shutdown when done:
-    api.shutdown()
+## Command line client example
 
+```shell
+# Get prices and simple analysis for Half-Life 2 cards.
+$ steampak app 220 get_card_prices --currency USD
 
-Command line client example
----------------------------
+# Get `Gordon Freeman` card price.
+$ steampak market item 220 "Gordon Freeman" get_price --currency GBP
 
-.. code-block:: bash
+# Get games owned by `idlesign`.
+$ steampak user idlesign get_games
+```
 
-    ; Get prices and simple analysis for Half-Life 2 cards.
-    $ steampak app 220 get_card_prices --currency USD
+Use `--help` command option to get more information on available commands.
 
-    ; Get `Gordon Freeman` card price.
-    $ steampak market item 220 "Gordon Freeman" get_price --currency GBP
-
-    ; Get games owned by `idlesign`.
-    $ steampak user idlesign get_games
-
-
-Use ``--help`` command option to get more information on available commands.
-
-
-Steam API bindings roadmap
---------------------------
+## Steam API bindings roadmap
 
 **Work in progress. Callback-based functions support is not implemented.**
 
@@ -115,8 +100,6 @@ Steam API bindings roadmap
     * UGC
     * Video
 
+## Documentation
 
-Documentation
--------------
-
-http://steampak.readthedocs.org/
+<https://steampak.readthedocs.io/>

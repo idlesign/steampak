@@ -13,7 +13,7 @@ URL_USER_GAMES_OWNED = URL_USER_BASE + '/games/?xml=1'
 INV_CLASSID_GEM = '667924416'
 
 
-class User(object):
+class User:
 
     def __init__(self, username):
         self.username = username

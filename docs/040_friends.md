@@ -1,20 +1,16 @@
-Friends
-=======
+# Friends
 
-.. autoclass:: steampak.libsteam.resources.friends.Friends
-    :inherited-members:
-
-
-Friend Tag
-----------
-
-.. autoclass:: steampak.libsteam.resources.friends.FriendTag
-    :inherited-members:
+::: apidescribed: steampak.libsteam.resources.friends
+    only: [Friends]
 
 
-Friend Filter
--------------
+## Friend Tag
 
-.. autoclass:: steampak.libsteam.resources.base.FriendFilter
-    :inherited-members:
-    :undoc-members:
+::: apidescribed: steampak.libsteam.resources.friends
+    only: [FriendTag]
+
+
+## Friend Filter
+
+::: apidescribed: steampak.libsteam.resources.base
+    only: [FriendFilter]

@@ -277,7 +277,7 @@ def get_cards_stats(ctx, currency, skip_owned, appid, foil):
         click.secho('User `%s` has no cards' % username, fg='red', err=True)
         return
 
-    for appid_, cards in cards_by_app.items():
+    for cards in cards_by_app.values():
         app = cards[0].app
         print_card_prices(
             app.appid, currency,

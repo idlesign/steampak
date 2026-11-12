@@ -4,7 +4,7 @@ from decimal import Decimal
 from ..settings import CURRENCY_RUB, URL_COMMUNITY_BASE, APPID_CARDS, CURRENCIES
 from ..utils import DataFetcher
 
-RE_CURRENCY = re.compile(r'[^\d]*(\d+([.,]\d+)?)[^\d]*', re.U)
+RE_CURRENCY = re.compile(r'[^\d]*(\d+([.,]\d+)?)[^\d]*', re.UNICODE)
 
 URL_PRICE_OVERVIEW = URL_COMMUNITY_BASE + '/market/priceoverview/'
 
@@ -20,7 +20,7 @@ TAG_ITEM_CLASS_BOOSTER = 'item_class_5'
 TAG_ITEM_CLASS_GEM = 'item_class_7'
 
 
-class Item(object):
+class Item:
 
     def __init__(self, app, title):
         from .apps import Application

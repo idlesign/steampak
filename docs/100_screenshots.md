@@ -1,5 +1,4 @@
-Screenshots
-===========
+# Screenshots
 
-.. autoclass:: steampak.libsteam.resources.screenshots.Screenshots
-    :inherited-members:
+::: apidescribed: steampak.libsteam.resources.screenshots
+    only: [Screenshots]

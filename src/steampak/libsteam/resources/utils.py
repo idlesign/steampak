@@ -4,7 +4,7 @@ from .base import _ApiResourceBase, _EnumBase
 
 
 if False:  # pragma: nocover
-    from ._wrapper import Utils as IUtils
+    pass
 
 
 class Universe(_EnumBase):

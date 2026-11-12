@@ -1,13 +1,12 @@
-Statistics
-==========
+# Statistics
 
 
 
-Achievement
------------
+## Achievement
 
-.. autoclass:: steampak.SteamAchievement
+::: apidescribed: steampak
+    only: [SteamAchievement]
 
-.. autoclass:: steampak.libsteam.resources.stats.Achievement
-    :inherited-members:
+::: apidescribed: steampak.libsteam.resources.stats
+    only: [Achievement]
 

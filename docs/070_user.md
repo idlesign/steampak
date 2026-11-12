@@ -1,24 +1,19 @@
-Users
-=====
+# Users
 
 
-Current User
-------------
+## Current User
 
-.. autoclass:: steampak.libsteam.resources.user.CurrentUser
-    :inherited-members:
-
-
-User
-----
-
-.. autoclass:: steampak.libsteam.resources.user.User
-    :inherited-members:
+::: apidescribed: steampak.libsteam.resources.user
+    only: [CurrentUser]
 
 
-User State
-----------
+## User
 
-.. autoclass:: steampak.libsteam.resources.user.UserState
-    :inherited-members:
-    :undoc-members:
+::: apidescribed: steampak.libsteam.resources.user
+    only: [User]
+
+
+## User State
+
+::: apidescribed: steampak.libsteam.resources.user
+    only: [UserState]

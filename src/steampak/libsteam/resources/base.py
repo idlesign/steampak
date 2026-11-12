@@ -4,14 +4,14 @@ from ctyped.types import CRef
 from ..exceptions import SteamApiError
 
 if False:  # pragma: nocover
-    from ._wrapper import Client
+    pass
 
 
 _API_THREAD_LOCAL = local()
 
 
 def _set_client(client):
-    setattr(_API_THREAD_LOCAL, 'steam_client', client)
+    _API_THREAD_LOCAL.steam_client = client
 
 
 class _EnumBase:

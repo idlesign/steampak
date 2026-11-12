@@ -1,40 +1,25 @@
-steampak installation
-=====================
+# steampak installation
 
+Python `pip` package is required to install `steampak`.
 
-Python ``pip`` package is required to install steampak.
+## From sources
 
+Use the following command line to install `steampak` from sources directory (containing `pyproject.toml`):
 
-From sources
-------------
+```shell
+pip install .
+```
 
+## From PyPI
 
-Use the following command line to install steampak from sources directory (containing setup.py):
+Alternatively you can install `steampak` from PyPI:
 
-    pip install .
-
-or
-
-    python setup.py install
-
-
-From PyPI
----------
-
-Alternatively you can install steampak from PyPI:
-
-    pip install steampak
-
+```shell
+pip install steampak
+```
 
 Use `-U` flag for upgrade:
 
-    pip install -U steampak
-
-
-Extras
-------
-
-To also install extra dependencies (for CLI, and Steam Web API):
-
-    pip install steampak[extra]
-
+```shell
+pip install -U steampak
+```

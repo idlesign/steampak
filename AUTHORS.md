@@ -1,10 +1,7 @@
-steampak authors
-================
+# steampak authors
 
 Created by Igor `idle sign` Starikov.
 
+## Contributors
 
-Contributors
-------------
-
-Ray Haleblian <https://github.com/rhaleblian>
+* Ray Haleblian <https://github.com/rhaleblian>

@@ -1,9 +1,9 @@
-Steam API (Main Entry Point)
-============================
+# Steam API (Main Entry Point)
 
-.. autoclass:: steampak.SteamApi
+::: apidescribed: steampak
+    only: [SteamApi]
 
-.. autoclass:: steampak.libsteam.resources.main.Api
-    :inherited-members:
+::: apidescribed: steampak.libsteam.resources.main
+    only: [Api]
 
 

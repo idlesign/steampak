@@ -1,13 +1,10 @@
 import logging
-from glob import glob
-from os import path
+from pathlib import Path
 
 import pytest
 
 from steampak import SteamApi
 from steampak.libsteam.resources.apps import Application
-from steampak.libsteam.resources.stats import Achievement
-from steampak.libsteam.resources.user import User
 
 
 def set_log_level(lvl):
@@ -21,24 +18,23 @@ APP_TIMBERMAN = 398710
 
 
 LOG_LEVEL = logging.DEBUG
-# set_log_level(LOG_LEVEL)
 
-libs = sorted(glob('libsteam_api*'))
+libs = sorted(Path.cwd().glob('libsteam_api*'))
 
 if not libs:
     raise Exception('Unable to locate library .so')
 
-LIBRARY_PATH = path.join(path.dirname(__file__), libs[-1])
+LIBRARY_PATH = Path(__file__).parent / libs[-1]
 
 
-@pytest.fixture()
+@pytest.fixture
 def api():
     api = SteamApi(LIBRARY_PATH, app_id=APP_SPACEWAR)
     yield api
     api.shutdown()
 
 
-@pytest.fixture()
+@pytest.fixture
 def set_app_id():
 
     def set_app_id_(app_id):
